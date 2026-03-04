@@ -6,10 +6,11 @@
 
 | 도구 | 버전 | 설치 |
 |------|------|------|
-| **Node.js** | 20.9+ | [nodejs.org](https://nodejs.org) |
-| **Yarn** | 4.x (Berry) | Corepack으로 자동 활성화 |
+| **mise** | 최신 | [mise.jdx.dev](https://mise.jdx.dev) |
 | **Docker** | 최신 | [docker.com](https://docker.com) (로컬 DB용) |
 | **Git** | 최신 | - |
+
+> Node.js와 Yarn은 `mise install` 실행 시 `mise.toml`에 정의된 버전으로 자동 설치됩니다.
 
 ### 초기 설정
 
@@ -18,8 +19,8 @@
 git clone https://github.com/user/blog.divops.kr.git
 cd blog.divops.kr
 
-# 2. Corepack 활성화 (Yarn Berry 자동 설치)
-corepack enable
+# 2. mise로 Node.js + Yarn 설치 (mise.toml 기반)
+mise install
 
 # 3. 의존성 설치
 yarn install

@@ -22,6 +22,7 @@
 | **Yarn PnP** | `node_modules` 없음. `require.resolve` 대신 PnP API 사용. 일부 패키지는 `.yarnrc.yml`에 `packageExtensions` 필요 |
 | **Next.js 16** | `middleware.ts` → `proxy.ts`, `params`/`searchParams`/`cookies`/`headers` 모두 `await` 필수 |
 | **Turbopack** | Next.js 16 기본 번들러. `next.config.ts`에서 webpack 커스텀 설정 사용 시 호환성 확인 필요 |
+| **mise** | `mise.toml`에 node, yarn 버전 명시. 로컬/CI 모두 `mise install`로 통일 |
 | **Prisma + PnP** | `postinstall` 스크립트에 `prisma generate` 추가 필요 |
 | **Auth.js v5** | `@auth/prisma-adapter` 사용. adapter 스키마 정확히 일치해야 함 |
 | **ESLint** | Next.js 16에서 `next lint` 제거됨. Flat Config 직접 구성 |
@@ -39,8 +40,10 @@ Yarn Berry PnP 모노리포 워크스페이스 초기화
 # 프로젝트 루트에서 실행
 cd /path/to/blog.divops.kr
 
+# mise로 Node.js + Yarn 설치 (mise.toml 기반)
+mise install
+
 # Yarn Berry 초기화
-corepack enable
 yarn init -2
 
 # PnP 모드 설정
@@ -53,6 +56,14 @@ mkdir -p packages/testing/src
 ```
 
 ### 생성할 파일
+
+#### `mise.toml`
+
+```toml
+[tools]
+node = "22"
+yarn = "4"
+```
 
 #### `package.json` (루트)
 
@@ -1151,8 +1162,12 @@ export default defineConfig({
 ```dockerfile
 FROM node:20-alpine AS base
 
-# Enable corepack for Yarn Berry
-RUN corepack enable
+# mise를 사용해 Yarn Berry 설치
+RUN apk add --no-cache curl bash \
+    && curl https://mise.run | sh
+ENV PATH="/root/.local/bin:/root/.local/share/mise/shims:$PATH"
+COPY mise.toml ./
+RUN mise install
 
 FROM base AS deps
 WORKDIR /app
@@ -1217,11 +1232,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-      - name: Enable Corepack
-        run: corepack enable
+      - uses: jdx/mise-action@v2
       - name: Install dependencies
         run: yarn install --immutable
       - name: Lint
@@ -1234,11 +1245,7 @@ jobs:
     needs: lint
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-      - name: Enable Corepack
-        run: corepack enable
+      - uses: jdx/mise-action@v2
       - name: Install dependencies
         run: yarn install --immutable
       - name: Run unit tests
@@ -1252,11 +1259,7 @@ jobs:
       AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-      - name: Enable Corepack
-        run: corepack enable
+      - uses: jdx/mise-action@v2
       - name: Install dependencies
         run: yarn install --immutable
       - name: Generate Prisma Client
@@ -1277,11 +1280,7 @@ jobs:
       S3_SECRET_KEY: ${{ secrets.S3_SECRET_KEY }}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-      - name: Enable Corepack
-        run: corepack enable
+      - uses: jdx/mise-action@v2
       - name: Install dependencies
         run: yarn install --immutable
       - name: Generate Prisma Client

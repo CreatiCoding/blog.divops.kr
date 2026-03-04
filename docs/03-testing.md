@@ -242,11 +242,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-      - name: Enable Corepack
-        run: corepack enable
+      - uses: jdx/mise-action@v2
       - name: Install dependencies
         run: yarn install --immutable
       - name: Lint
@@ -259,11 +255,7 @@ jobs:
     needs: lint
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-      - name: Enable Corepack
-        run: corepack enable
+      - uses: jdx/mise-action@v2
       - name: Install dependencies
         run: yarn install --immutable
       - name: Run unit tests
@@ -277,11 +269,7 @@ jobs:
       AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-      - name: Enable Corepack
-        run: corepack enable
+      - uses: jdx/mise-action@v2
       - name: Install dependencies
         run: yarn install --immutable
       - name: Build
@@ -300,11 +288,7 @@ jobs:
       S3_SECRET_KEY: ${{ secrets.S3_SECRET_KEY }}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-      - name: Enable Corepack
-        run: corepack enable
+      - uses: jdx/mise-action@v2
       - name: Install dependencies
         run: yarn install --immutable
       - name: Install Playwright browsers
