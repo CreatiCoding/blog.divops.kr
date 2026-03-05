@@ -20,7 +20,7 @@ RUN yarn workspace @blog/service build
 # production 의존성만 남기기 (dev 캐시 제거)
 RUN yarn workspaces focus @blog/service --production
 
-FROM node:22-alpine AS runner
+FROM base AS runner
 WORKDIR /app
 ENV NODE_ENV=production
 
