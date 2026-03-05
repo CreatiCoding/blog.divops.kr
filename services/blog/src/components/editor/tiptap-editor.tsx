@@ -51,49 +51,49 @@ export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleBold().run()}
-          className={`px-2 py-1 rounded text-sm ${editor.isActive('bold') ? 'bg-gray-300' : 'hover:bg-gray-200'}`}
+          className={`px-2 py-1 rounded text-sm cursor-pointer ${editor.isActive('bold') ? 'bg-gray-300' : 'hover:bg-gray-200'}`}
         >
           B
         </button>
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleItalic().run()}
-          className={`px-2 py-1 rounded text-sm ${editor.isActive('italic') ? 'bg-gray-300' : 'hover:bg-gray-200'}`}
+          className={`px-2 py-1 rounded text-sm cursor-pointer ${editor.isActive('italic') ? 'bg-gray-300' : 'hover:bg-gray-200'}`}
         >
           I
         </button>
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-          className={`px-2 py-1 rounded text-sm ${editor.isActive('heading', { level: 2 }) ? 'bg-gray-300' : 'hover:bg-gray-200'}`}
+          className={`px-2 py-1 rounded text-sm cursor-pointer ${editor.isActive('heading', { level: 2 }) ? 'bg-gray-300' : 'hover:bg-gray-200'}`}
         >
           H2
         </button>
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
-          className={`px-2 py-1 rounded text-sm ${editor.isActive('heading', { level: 3 }) ? 'bg-gray-300' : 'hover:bg-gray-200'}`}
+          className={`px-2 py-1 rounded text-sm cursor-pointer ${editor.isActive('heading', { level: 3 }) ? 'bg-gray-300' : 'hover:bg-gray-200'}`}
         >
           H3
         </button>
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleBulletList().run()}
-          className={`px-2 py-1 rounded text-sm ${editor.isActive('bulletList') ? 'bg-gray-300' : 'hover:bg-gray-200'}`}
+          className={`px-2 py-1 rounded text-sm cursor-pointer ${editor.isActive('bulletList') ? 'bg-gray-300' : 'hover:bg-gray-200'}`}
         >
           List
         </button>
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleCodeBlock().run()}
-          className={`px-2 py-1 rounded text-sm ${editor.isActive('codeBlock') ? 'bg-gray-300' : 'hover:bg-gray-200'}`}
+          className={`px-2 py-1 rounded text-sm cursor-pointer ${editor.isActive('codeBlock') ? 'bg-gray-300' : 'hover:bg-gray-200'}`}
         >
           Code
         </button>
         <button
           type="button"
           onClick={addImage}
-          className="px-2 py-1 rounded text-sm hover:bg-gray-200"
+          className="px-2 py-1 rounded text-sm cursor-pointer hover:bg-gray-200"
         >
           Image
         </button>
