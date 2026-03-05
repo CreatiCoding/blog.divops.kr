@@ -13,13 +13,17 @@ IMAGE="${REGISTRY_URL}/${REGISTRY_IMAGE_NAME}:latest"
 REPO_ROOT="$(git rev-parse --show-toplevel)"
 cd "$REPO_ROOT"
 
-echo "▶ Building Docker image..."
-docker build -f services/blog/Dockerfile -t "$IMAGE" .
+echo "▶ Installing dependencies..."
+yarn install
 
-echo "▶ Logging in to registry..."
-echo "$REGISTRY_PASSWORD" | docker login "$REGISTRY_URL" -u "$REGISTRY_USERNAME" --password-stdin
+echo "▶ Building Docker image (skip yarn install, build only)..."
+docker build \
+  -f services/blog/scripts/Dockerfile.deploy \
+  --build-context dockerignore="$SCRIPT_DIR" \
+  -t "$IMAGE" .
 
 echo "▶ Pushing image..."
+echo "$REGISTRY_PASSWORD" | docker login "$REGISTRY_URL" -u "$REGISTRY_USERNAME" --password-stdin 2>/dev/null
 docker push "$IMAGE"
 
 echo "▶ Triggering Dokploy redeploy..."
