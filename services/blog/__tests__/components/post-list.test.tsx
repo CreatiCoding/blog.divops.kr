@@ -53,7 +53,7 @@ describe('PostList', () => {
   });
 
   it('UI-005: excerpt가 없으면 요약 영역을 렌더링하지 않는다', () => {
-    const { container } = render(
+    render(
       <PostList posts={[createPost({ excerpt: null })]} />,
     );
     // excerpt용 p만 없어야 함 (author.name p는 있을 수 있음)
