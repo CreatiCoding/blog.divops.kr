@@ -7,6 +7,7 @@ import {
   integer,
   index,
   uniqueIndex,
+  primaryKey,
 } from 'drizzle-orm/pg-core';
 import { createId } from './utils';
 
@@ -30,7 +31,6 @@ export const users = pgTable('user', {
 export const accounts = pgTable(
   'account',
   {
-    id: text('id').primaryKey().$defaultFn(createId),
     userId: text('userId')
       .notNull()
       .references(() => users.id, { onDelete: 'cascade' }),
@@ -46,10 +46,7 @@ export const accounts = pgTable(
     session_state: text('session_state'),
   },
   (table) => [
-    uniqueIndex('account_provider_providerAccountId_key').on(
-      table.provider,
-      table.providerAccountId
-    ),
+    primaryKey({ columns: [table.provider, table.providerAccountId] }),
   ]
 );
 
