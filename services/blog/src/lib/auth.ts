@@ -21,6 +21,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     }),
   ],
   callbacks: {
+    async signIn({ profile }) {
+      const allowedUsers = ['CreatiCoding'];
+      return allowedUsers.includes(profile?.login as string);
+    },
     async session({ session, user }) {
       if (session.user) {
         session.user.id = user.id;
