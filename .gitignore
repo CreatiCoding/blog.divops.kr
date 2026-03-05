@@ -16,6 +16,9 @@ node_modules
 #!.yarn/cache
 .pnp.*
 
+# TypeScript build info
+*.tsbuildinfo
+
 # Next.js
 .next/
 .env*.local
