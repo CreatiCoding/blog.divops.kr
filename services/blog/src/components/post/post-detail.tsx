@@ -29,12 +29,12 @@ export function PostDetail({
       <header className="mb-12 pt-8">
         <div className="flex items-center gap-2.5 mb-5">
           {category && (
-            <span className="text-[12px] font-semibold uppercase tracking-wider text-gray-900 bg-gray-100 px-2 py-0.5 rounded">
+            <span className="text-[12px] font-semibold uppercase tracking-wider text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded">
               {category}
             </span>
           )}
           {publishedAt && (
-            <time dateTime={publishedAt} className="text-[13px] text-gray-300">
+            <time dateTime={publishedAt} className="text-[13px] text-gray-300 dark:text-gray-600">
               {new Date(publishedAt).toLocaleDateString('ko-KR', {
                 year: 'numeric',
                 month: 'long',
@@ -43,7 +43,7 @@ export function PostDetail({
             </time>
           )}
         </div>
-        <h1 className="text-[32px] md:text-[38px] font-extrabold leading-[1.25] tracking-tight text-gray-900 break-keep">
+        <h1 className="text-[32px] md:text-[38px] font-extrabold leading-[1.25] tracking-tight text-gray-900 dark:text-gray-100 break-keep">
           {title}
         </h1>
         {author?.name && (
@@ -57,7 +57,7 @@ export function PostDetail({
                 className="rounded-full"
               />
             )}
-            <span className="text-[13px] text-gray-400">{author.name}</span>
+            <span className="text-[13px] text-gray-400 dark:text-gray-500">{author.name}</span>
           </div>
         )}
       </header>

@@ -49,10 +49,10 @@ export default async function HomePage() {
   return (
     <section className="max-w-[720px] mx-auto px-6 pt-20 pb-16">
       <div className="mb-16">
-        <h1 className="text-[28px] font-bold tracking-tight text-gray-900">
+        <h1 className="text-[28px] font-bold tracking-tight text-gray-900 dark:text-gray-100">
           Blog
         </h1>
-        <p className="mt-2 text-[15px] text-gray-400">
+        <p className="mt-2 text-[15px] text-gray-400 dark:text-gray-500">
           DevOps와 프론트엔드 개발에 대한 이야기
         </p>
       </div>

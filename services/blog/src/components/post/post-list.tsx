@@ -17,7 +17,7 @@ export function PostList({ posts }: { posts: Post[] }) {
   if (posts.length === 0) {
     return (
       <div className="py-20 text-center">
-        <p className="text-gray-300 text-[15px]">아직 작성된 글이 없습니다.</p>
+        <p className="text-gray-300 dark:text-gray-600 text-[15px]">아직 작성된 글이 없습니다.</p>
       </div>
     );
   }
@@ -26,17 +26,17 @@ export function PostList({ posts }: { posts: Post[] }) {
     <div className="flex flex-col">
       {posts.map((post) => (
         <Link key={post.id} href={`/${post.slug}`} className="group block">
-          <article className="py-8 border-b border-gray-100 last:border-0">
+          <article className="py-8 border-b border-gray-100 dark:border-gray-800 last:border-0">
             <div className="flex items-center gap-2 mb-2.5">
               {post.category && (
-                <span className="text-[12px] font-semibold uppercase tracking-wider text-gray-900 bg-gray-100 px-2 py-0.5 rounded">
+                <span className="text-[12px] font-semibold uppercase tracking-wider text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded">
                   {post.category}
                 </span>
               )}
               {post.publishedAt && (
                 <time
                   dateTime={post.publishedAt}
-                  className="text-[13px] text-gray-300"
+                  className="text-[13px] text-gray-300 dark:text-gray-600"
                 >
                   {new Date(post.publishedAt).toLocaleDateString('ko-KR', {
                     year: 'numeric',
@@ -46,16 +46,16 @@ export function PostList({ posts }: { posts: Post[] }) {
                 </time>
               )}
             </div>
-            <h2 className="text-[18px] font-semibold text-gray-900 leading-snug tracking-tight group-hover:text-gray-500 transition-colors duration-200">
+            <h2 className="text-[18px] font-semibold text-gray-900 dark:text-gray-100 leading-snug tracking-tight group-hover:text-gray-500 dark:group-hover:text-gray-400 transition-colors duration-200">
               {post.title}
             </h2>
             {post.excerpt && (
-              <p className="mt-2 text-[14px] text-gray-400 leading-relaxed line-clamp-2">
+              <p className="mt-2 text-[14px] text-gray-400 dark:text-gray-500 leading-relaxed line-clamp-2">
                 {post.excerpt}
               </p>
             )}
             {post.author?.name && (
-              <p className="mt-3 text-[12px] text-gray-300">
+              <p className="mt-3 text-[12px] text-gray-300 dark:text-gray-600">
                 {post.author.name}
               </p>
             )}
