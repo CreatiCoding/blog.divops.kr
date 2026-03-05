@@ -13,27 +13,44 @@ export default async function AdminLayout({
   }
 
   return (
-    <div className="min-h-screen">
-      <nav className="bg-gray-900 text-white px-6 py-3 flex items-center justify-between">
-        <div className="flex items-center gap-6">
-          <Link href="/admin/posts" className="font-bold text-lg">
-            Admin
-          </Link>
-          <Link href="/admin/write" className="text-gray-300 hover:text-white">
-            Write
-          </Link>
-          <Link href="/admin/posts" className="text-gray-300 hover:text-white">
-            Posts
-          </Link>
-        </div>
-        <div className="flex items-center gap-4">
-          <span className="text-sm text-gray-400">{session.user.name}</span>
-          <Link href="/" className="text-sm text-gray-400 hover:text-white">
-            Blog
-          </Link>
+    <div className="min-h-screen bg-[#f8f9fb]">
+      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200/60">
+        <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
+          <div className="flex items-center gap-1">
+            <Link
+              href="/admin/posts"
+              className="px-3 py-1.5 text-[15px] font-semibold text-gray-900 rounded-lg hover:bg-gray-100 transition-colors"
+            >
+              Admin
+            </Link>
+            <div className="w-px h-4 bg-gray-200 mx-1" />
+            <Link
+              href="/admin/write"
+              className="px-3 py-1.5 text-sm text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-900 transition-colors"
+            >
+              Write
+            </Link>
+            <Link
+              href="/admin/posts"
+              className="px-3 py-1.5 text-sm text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-900 transition-colors"
+            >
+              Posts
+            </Link>
+          </div>
+          <div className="flex items-center gap-3">
+            <span className="text-xs text-gray-400 bg-gray-100 px-2.5 py-1 rounded-full">
+              {session.user.name}
+            </span>
+            <Link
+              href="/"
+              className="text-xs text-gray-400 hover:text-gray-600 transition-colors"
+            >
+              View Blog &rarr;
+            </Link>
+          </div>
         </div>
       </nav>
-      <main className="max-w-5xl mx-auto px-4 py-8">{children}</main>
+      <main className="max-w-6xl mx-auto px-6 py-8">{children}</main>
     </div>
   );
 }

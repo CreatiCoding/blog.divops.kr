@@ -114,15 +114,15 @@ export function MarkdownEditor({ content, onChange }: MarkdownEditorProps) {
   );
 
   return (
-    <div className="border rounded-lg overflow-hidden">
-      <div className="flex items-center border-b bg-gray-50">
+    <div>
+      <div className="flex items-center border-b border-gray-100 px-2">
         <button
           type="button"
           onClick={() => setMode('markdown')}
-          className={`px-4 py-2 text-sm font-medium cursor-pointer transition-colors ${
+          className={`px-3 py-2.5 text-xs font-medium cursor-pointer transition-colors relative ${
             mode === 'markdown'
-              ? 'bg-white border-b-2 border-blue-600 text-blue-600'
-              : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+              ? 'text-gray-900 after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-gray-900 after:rounded-full'
+              : 'text-gray-400 hover:text-gray-600'
           }`}
         >
           Markdown
@@ -130,24 +130,24 @@ export function MarkdownEditor({ content, onChange }: MarkdownEditorProps) {
         <button
           type="button"
           onClick={() => setMode('preview')}
-          className={`px-4 py-2 text-sm font-medium cursor-pointer transition-colors ${
+          className={`px-3 py-2.5 text-xs font-medium cursor-pointer transition-colors relative ${
             mode === 'preview'
-              ? 'bg-white border-b-2 border-blue-600 text-blue-600'
-              : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+              ? 'text-gray-900 after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-gray-900 after:rounded-full'
+              : 'text-gray-400 hover:text-gray-600'
           }`}
         >
           Preview
         </button>
 
         {mode === 'markdown' && (
-          <div className="ml-auto pr-2 flex items-center gap-2">
+          <div className="ml-auto flex items-center gap-2">
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
               disabled={uploading}
-              className="px-3 py-1.5 text-xs font-medium text-gray-600 bg-white border rounded-md cursor-pointer hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-2.5 py-1 text-xs text-gray-400 rounded-md cursor-pointer hover:text-gray-600 hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {uploading ? 'Uploading...' : 'Add Image'}
+              {uploading ? 'Uploading...' : '+ Image'}
             </button>
             <input
               ref={fileInputRef}

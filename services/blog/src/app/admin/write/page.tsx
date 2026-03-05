@@ -58,7 +58,7 @@ export default function WritePage() {
   }, [editId, router]);
 
   const handleSlugGenerate = () => {
-    if (slug) return; // don't overwrite manually set slug
+    if (slug) return;
     setSlug(
       title
         .toLowerCase()
@@ -99,110 +99,132 @@ export default function WritePage() {
   };
 
   if (loading) {
-    return <div className="text-gray-500">Loading...</div>;
+    return (
+      <div className="flex items-center justify-center py-20">
+        <div className="text-sm text-gray-400">Loading...</div>
+      </div>
+    );
   }
 
   return (
-    <div className="space-y-6">
+    <div className="max-w-4xl mx-auto space-y-8">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">{editId ? 'Edit Post' : 'New Post'}</h1>
-        {editId && (
+        <h1 className="text-xl font-semibold text-gray-900">
+          {editId ? 'Edit Post' : 'New Post'}
+        </h1>
+        <div className="flex items-center gap-2">
+          {editId && (
+            <button
+              onClick={handleDelete}
+              className="px-3 py-1.5 text-sm text-red-500 rounded-lg cursor-pointer hover:bg-red-50 transition-colors"
+            >
+              Delete
+            </button>
+          )}
           <button
-            onClick={handleDelete}
-            className="px-4 py-2 text-red-600 border border-red-300 rounded-lg cursor-pointer hover:bg-red-50"
+            onClick={() => handleSubmit(false)}
+            disabled={saving}
+            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Delete
+            Save Draft
           </button>
-        )}
+          <button
+            onClick={() => handleSubmit(true)}
+            disabled={saving}
+            className="px-4 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg cursor-pointer hover:bg-gray-800 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Publish
+          </button>
+        </div>
       </div>
-      <div>
-        <label className="block text-sm font-medium mb-1">Title</label>
-        <input
-          type="text"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          onBlur={handleSlugGenerate}
-          className="w-full border rounded-lg px-3 py-2"
-          placeholder="Post title"
-        />
+
+      <div className="bg-white rounded-xl border border-gray-200/60 shadow-sm p-6 space-y-5">
+        <div>
+          <label className="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-1.5">
+            Title
+          </label>
+          <input
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            onBlur={handleSlugGenerate}
+            className="w-full border border-gray-200 rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-300 transition-shadow placeholder:text-gray-300"
+            placeholder="Post title"
+          />
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-1.5">
+              Slug
+            </label>
+            <input
+              type="text"
+              value={slug}
+              onChange={(e) => setSlug(e.target.value)}
+              className="w-full border border-gray-200 rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-300 transition-shadow placeholder:text-gray-300 font-mono"
+              placeholder="post-slug"
+            />
+          </div>
+
+          <div ref={categoryRef} className="relative">
+            <label className="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-1.5">
+              Category
+            </label>
+            <input
+              type="text"
+              value={category}
+              onChange={(e) => {
+                setCategory(e.target.value);
+                setShowCategoryDropdown(true);
+              }}
+              onFocus={() => setShowCategoryDropdown(true)}
+              className="w-full border border-gray-200 rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-300 transition-shadow placeholder:text-gray-300"
+              placeholder="Select or type a category"
+            />
+            {showCategoryDropdown && (() => {
+              const filtered = categories.filter(
+                (c) => c.toLowerCase().includes(category.toLowerCase()) && c !== category
+              );
+              if (filtered.length === 0) return null;
+              return (
+                <ul className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-48 overflow-y-auto">
+                  {filtered.map((c) => (
+                    <li key={c}>
+                      <button
+                        type="button"
+                        className="w-full text-left px-3.5 py-2 cursor-pointer hover:bg-gray-50 text-sm transition-colors"
+                        onClick={() => {
+                          setCategory(c);
+                          setShowCategoryDropdown(false);
+                        }}
+                      >
+                        {c}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              );
+            })()}
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-1.5">
+            Excerpt
+          </label>
+          <textarea
+            value={excerpt}
+            onChange={(e) => setExcerpt(e.target.value)}
+            className="w-full border border-gray-200 rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-300 transition-shadow resize-none placeholder:text-gray-300"
+            rows={2}
+            placeholder="Short description"
+          />
+        </div>
       </div>
-      <div>
-        <label className="block text-sm font-medium mb-1">Slug</label>
-        <input
-          type="text"
-          value={slug}
-          onChange={(e) => setSlug(e.target.value)}
-          className="w-full border rounded-lg px-3 py-2"
-          placeholder="post-slug"
-        />
-      </div>
-      <div ref={categoryRef} className="relative">
-        <label className="block text-sm font-medium mb-1">Category</label>
-        <input
-          type="text"
-          value={category}
-          onChange={(e) => {
-            setCategory(e.target.value);
-            setShowCategoryDropdown(true);
-          }}
-          onFocus={() => setShowCategoryDropdown(true)}
-          className="w-full border rounded-lg px-3 py-2"
-          placeholder="Select or type a category"
-        />
-        {showCategoryDropdown && (() => {
-          const filtered = categories.filter(
-            (c) => c.toLowerCase().includes(category.toLowerCase()) && c !== category
-          );
-          if (filtered.length === 0) return null;
-          return (
-            <ul className="absolute z-10 w-full mt-1 bg-white border rounded-lg shadow-lg max-h-48 overflow-y-auto">
-              {filtered.map((c) => (
-                <li key={c}>
-                  <button
-                    type="button"
-                    className="w-full text-left px-3 py-2 cursor-pointer hover:bg-blue-50 text-sm"
-                    onClick={() => {
-                      setCategory(c);
-                      setShowCategoryDropdown(false);
-                    }}
-                  >
-                    {c}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          );
-        })()}
-      </div>
-      <div>
-        <label className="block text-sm font-medium mb-1">Excerpt</label>
-        <textarea
-          value={excerpt}
-          onChange={(e) => setExcerpt(e.target.value)}
-          className="w-full border rounded-lg px-3 py-2"
-          rows={2}
-          placeholder="Short description"
-        />
-      </div>
-      <div>
-        <label className="block text-sm font-medium mb-1">Content</label>
+
+      <div className="bg-white rounded-xl border border-gray-200/60 shadow-sm overflow-hidden">
         <MarkdownEditor key={editId ?? 'new'} content={content} onChange={setContent} />
-      </div>
-      <div className="flex gap-3">
-        <button
-          onClick={() => handleSubmit(false)}
-          disabled={saving}
-          className="px-4 py-2 border rounded-lg cursor-pointer hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          Save Draft
-        </button>
-        <button
-          onClick={() => handleSubmit(true)}
-          disabled={saving}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg cursor-pointer hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          Publish
-        </button>
       </div>
     </div>
   );
