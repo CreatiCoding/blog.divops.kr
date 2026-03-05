@@ -4,7 +4,7 @@ RUN apk add --no-cache curl bash \
     && curl https://mise.run | sh
 ENV PATH="/root/.local/bin:/root/.local/share/mise/shims:$PATH"
 COPY mise.toml ./
-RUN mise install
+RUN mise trust && mise install
 
 FROM base AS deps
 WORKDIR /app
