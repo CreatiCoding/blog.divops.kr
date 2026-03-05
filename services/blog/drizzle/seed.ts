@@ -13,7 +13,7 @@ async function main() {
     .insert(users)
     .values({
       email: 'admin@divops.kr',
-      name: 'Admin',
+      name: 'admin',
       role: 'ADMIN',
     })
     .onConflictDoNothing()
