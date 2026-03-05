@@ -1,4 +1,11 @@
+'use client';
+
 import Image from 'next/image';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import rehypeRaw from 'rehype-raw';
+import rehypeHighlight from 'rehype-highlight';
+import 'highlight.js/styles/github-dark.css';
 
 type PostDetailProps = {
   title: string;
@@ -54,10 +61,25 @@ export function PostDetail({
           priority
         />
       )}
-      <div
-        className="prose prose-lg max-w-none"
-        dangerouslySetInnerHTML={{ __html: content }}
-      />
+      <div className="prose prose-lg max-w-none">
+        <ReactMarkdown
+          remarkPlugins={[remarkGfm]}
+          rehypePlugins={[rehypeRaw, rehypeHighlight]}
+          components={{
+            img: ({ src, alt, ...props }) => (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={src} alt={alt ?? ''} loading="lazy" {...props} />
+            ),
+            a: ({ href, children, ...props }) => (
+              <a href={href} target="_blank" rel="noopener noreferrer" {...props}>
+                {children}
+              </a>
+            ),
+          }}
+        >
+          {content}
+        </ReactMarkdown>
+      </div>
     </article>
   );
 }
