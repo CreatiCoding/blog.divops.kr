@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { TiptapEditor } from '@/components/editor/tiptap-editor';
+import { MarkdownEditor } from '@/components/editor/markdown-editor';
 
 export default function WritePage() {
   const router = useRouter();
@@ -186,7 +186,7 @@ export default function WritePage() {
       </div>
       <div>
         <label className="block text-sm font-medium mb-1">Content</label>
-        <TiptapEditor key={editId ?? 'new'} content={content} onChange={setContent} />
+        <MarkdownEditor key={editId ?? 'new'} content={content} onChange={setContent} />
       </div>
       <div className="flex gap-3">
         <button
