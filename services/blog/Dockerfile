@@ -8,7 +8,7 @@ COPY .yarn ./.yarn
 COPY services/blog/package.json ./services/blog/
 COPY packages/fixtures/package.json ./packages/fixtures/
 COPY packages/testing/package.json ./packages/testing/
-RUN yarn install --immutable
+RUN yarn config set enableGlobalCache false && yarn install --immutable
 COPY . .
 RUN yarn workspace @blog/service build
 
