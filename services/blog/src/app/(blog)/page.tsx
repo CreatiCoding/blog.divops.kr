@@ -6,24 +6,38 @@ import { PostList } from '@/components/post/post-list';
 export const dynamic = 'force-dynamic';
 
 export default async function HomePage() {
-  const postList = await db
-    .select({
-      id: posts.id,
-      title: posts.title,
-      slug: posts.slug,
-      excerpt: posts.excerpt,
-      coverImage: posts.coverImage,
-      publishedAt: posts.publishedAt,
-      author: {
-        name: users.name,
-        image: users.image,
-      },
-    })
-    .from(posts)
-    .leftJoin(users, eq(posts.authorId, users.id))
-    .where(eq(posts.published, true))
-    .orderBy(desc(posts.publishedAt))
-    .limit(20);
+  let postList: {
+    id: string;
+    title: string;
+    slug: string;
+    excerpt: string | null;
+    coverImage: string | null;
+    publishedAt: Date | null;
+    author: { name: string | null; image: string | null };
+  }[] = [];
+
+  try {
+    postList = await db
+      .select({
+        id: posts.id,
+        title: posts.title,
+        slug: posts.slug,
+        excerpt: posts.excerpt,
+        coverImage: posts.coverImage,
+        publishedAt: posts.publishedAt,
+        author: {
+          name: users.name,
+          image: users.image,
+        },
+      })
+      .from(posts)
+      .leftJoin(users, eq(posts.authorId, users.id))
+      .where(eq(posts.published, true))
+      .orderBy(desc(posts.publishedAt))
+      .limit(20);
+  } catch {
+    // DB 연결 실패 시 빈 목록으로 fallback
+  }
 
   const serialized = postList.map((p) => ({
     ...p,
