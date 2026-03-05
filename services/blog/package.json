@@ -22,6 +22,7 @@
     "@aws-sdk/client-s3": "^3.0.0",
     "@blog/fixtures": "workspace:*",
     "@blog/testing": "workspace:*",
+    "@tailwindcss/typography": "^0.5.19",
     "@tiptap/core": "^2.0.0",
     "@tiptap/extension-image": "^2.0.0",
     "@tiptap/pm": "^2.0.0",

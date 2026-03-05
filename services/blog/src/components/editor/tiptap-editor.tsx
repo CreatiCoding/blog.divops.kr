@@ -17,6 +17,7 @@ export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
       TiptapImage.configure({ inline: false, allowBase64: false }),
     ],
     content,
+    immediatelyRender: false,
     onUpdate: ({ editor }) => {
       onChange(editor.getHTML());
     },

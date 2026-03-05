@@ -1,1 +1,15 @@
 @import 'tailwindcss';
+@plugin '@tailwindcss/typography';
+
+/* TipTap editor styles */
+.ProseMirror {
+  outline: none;
+  min-height: 250px;
+}
+.ProseMirror p.is-editor-empty:first-child::before {
+  content: 'Write something...';
+  color: #adb5bd;
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
