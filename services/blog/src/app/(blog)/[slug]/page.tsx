@@ -27,24 +27,28 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const [post] = await db
-    .select()
-    .from(posts)
-    .where(eq(posts.slug, slug));
+  try {
+    const [post] = await db
+      .select()
+      .from(posts)
+      .where(eq(posts.slug, slug));
 
-  if (!post) return {};
+    if (!post) return {};
 
-  return {
-    title: post.title,
-    description: post.excerpt,
-    openGraph: {
+    return {
       title: post.title,
-      description: post.excerpt ?? undefined,
-      images: post.coverImage ? [post.coverImage] : [],
-      type: 'article',
-      publishedTime: post.publishedAt?.toISOString(),
-    },
-  };
+      description: post.excerpt,
+      openGraph: {
+        title: post.title,
+        description: post.excerpt ?? undefined,
+        images: post.coverImage ? [post.coverImage] : [],
+        type: 'article',
+        publishedTime: post.publishedAt?.toISOString(),
+      },
+    };
+  } catch {
+    return {};
+  }
 }
 
 export default async function PostPage({
@@ -54,21 +58,26 @@ export default async function PostPage({
 }) {
   const { slug } = await params;
 
-  const [post] = await db
-    .select({
-      id: posts.id,
-      title: posts.title,
-      content: posts.content,
-      coverImage: posts.coverImage,
-      publishedAt: posts.publishedAt,
-      author: {
-        name: users.name,
-        image: users.image,
-      },
-    })
-    .from(posts)
-    .leftJoin(users, eq(posts.authorId, users.id))
-    .where(eq(posts.slug, slug));
+  let post;
+  try {
+    [post] = await db
+      .select({
+        id: posts.id,
+        title: posts.title,
+        content: posts.content,
+        coverImage: posts.coverImage,
+        publishedAt: posts.publishedAt,
+        author: {
+          name: users.name,
+          image: users.image,
+        },
+      })
+      .from(posts)
+      .leftJoin(users, eq(posts.authorId, users.id))
+      .where(eq(posts.slug, slug));
+  } catch {
+    notFound();
+  }
 
   if (!post) notFound();
 
