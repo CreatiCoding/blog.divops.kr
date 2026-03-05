@@ -1,15 +1,6 @@
 @import 'tailwindcss';
 @plugin '@tailwindcss/typography';
 
-/* Pretendard font */
-@font-face {
-  font-family: 'Pretendard';
-  font-weight: 100 900;
-  font-style: normal;
-  font-display: swap;
-  src: url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css');
-}
-
 @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css');
 
 /* Base styles */
@@ -23,33 +14,35 @@ html {
 }
 
 body {
-  background-color: #fafafa;
+  background-color: #ffffff;
   color: #191f28;
 }
 
 /* Custom prose styles for article content */
 .prose {
-  --tw-prose-body: #333d4b;
-  --tw-prose-headings: #191f28;
-  --tw-prose-links: #3182f6;
-  --tw-prose-bold: #191f28;
-  --tw-prose-code: #191f28;
-  --tw-prose-quotes: #4e5968;
-  --tw-prose-quote-borders: #e5e8eb;
-  line-height: 1.8;
-  font-size: 17px;
+  --tw-prose-body: #374151;
+  --tw-prose-headings: #111827;
+  --tw-prose-links: #111827;
+  --tw-prose-bold: #111827;
+  --tw-prose-code: #111827;
+  --tw-prose-quotes: #4b5563;
+  --tw-prose-quote-borders: #e5e7eb;
+  line-height: 1.85;
+  font-size: 16.5px;
 }
 
 .prose h1 {
-  font-weight: 700;
-  letter-spacing: -0.02em;
+  font-weight: 800;
+  letter-spacing: -0.025em;
 }
 
 .prose h2 {
   font-weight: 700;
   letter-spacing: -0.02em;
   margin-top: 2.5em;
-  margin-bottom: 1em;
+  margin-bottom: 0.75em;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid #f3f4f6;
 }
 
 .prose h3 {
@@ -64,10 +57,10 @@ body {
 }
 
 .prose code {
-  background-color: #f2f4f6;
-  padding: 0.15em 0.4em;
-  border-radius: 4px;
-  font-size: 0.9em;
+  background-color: #f3f4f6;
+  padding: 0.2em 0.45em;
+  border-radius: 6px;
+  font-size: 0.875em;
   font-weight: 500;
 }
 
@@ -77,21 +70,22 @@ body {
 }
 
 .prose pre {
-  background-color: #1e1e1e;
+  background-color: #1a1a2e;
   border-radius: 12px;
   padding: 1.25em 1.5em;
   overflow-x: auto;
+  border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .prose pre code {
   background-color: transparent;
   padding: 0;
-  font-size: 0.875em;
+  font-size: 0.85em;
 }
 
 .prose blockquote {
-  border-left: 3px solid #3182f6;
-  background-color: #f8f9fa;
+  border-left: 3px solid #111827;
+  background-color: #f9fafb;
   padding: 1em 1.5em;
   border-radius: 0 8px 8px 0;
   font-style: normal;
@@ -104,19 +98,49 @@ body {
 }
 
 .prose a {
-  color: #3182f6;
-  text-decoration: none;
+  color: #111827;
+  text-decoration: underline;
+  text-decoration-color: #d1d5db;
+  text-underline-offset: 3px;
   font-weight: 500;
+  transition: text-decoration-color 0.2s;
 }
 
 .prose a:hover {
-  text-decoration: underline;
+  text-decoration-color: #111827;
 }
 
 .prose hr {
-  border-color: #e5e8eb;
+  border-color: #f3f4f6;
   margin-top: 3em;
   margin-bottom: 3em;
+}
+
+.prose ul,
+.prose ol {
+  padding-left: 1.5em;
+}
+
+.prose li {
+  margin-top: 0.4em;
+  margin-bottom: 0.4em;
+}
+
+.prose table {
+  font-size: 0.9em;
+  border-collapse: collapse;
+}
+
+.prose th {
+  background-color: #f9fafb;
+  font-weight: 600;
+  padding: 0.75em 1em;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.prose td {
+  padding: 0.75em 1em;
+  border-bottom: 1px solid #f3f4f6;
 }
 
 /* TipTap editor styles */

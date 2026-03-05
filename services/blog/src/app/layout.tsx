@@ -22,20 +22,20 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body className="min-h-screen flex flex-col">
-        <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
-          <nav className="max-w-[720px] mx-auto px-6 h-16 flex items-center justify-between">
+        <header className="sticky top-0 z-50 bg-white/70 backdrop-blur-xl border-b border-gray-100/80">
+          <nav className="max-w-[720px] mx-auto px-6 h-14 flex items-center justify-between">
             <Link
               href="/"
-              className="text-[18px] font-bold tracking-tight text-gray-900 hover:text-gray-600 transition-colors"
+              className="text-[15px] font-semibold tracking-tight text-gray-900 hover:text-gray-500 transition-colors"
             >
               divops.kr
             </Link>
           </nav>
         </header>
         <main className="flex-1">{children}</main>
-        <footer className="border-t border-gray-100 bg-white">
-          <div className="max-w-[720px] mx-auto px-6 py-8">
-            <p className="text-sm text-gray-400">
+        <footer className="border-t border-gray-100/80">
+          <div className="max-w-[720px] mx-auto px-6 py-10">
+            <p className="text-[13px] text-gray-300">
               &copy; {new Date().getFullYear()} divops.kr
             </p>
           </div>

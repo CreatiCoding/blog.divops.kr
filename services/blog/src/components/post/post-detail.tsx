@@ -26,33 +26,15 @@ export function PostDetail({
 }: PostDetailProps) {
   return (
     <article>
-      <header className="mb-12 pt-4">
-        {category && (
-          <span className="inline-block text-[14px] font-semibold text-blue-500 mb-4">
-            {category}
-          </span>
-        )}
-        <h1 className="text-[36px] md:text-[42px] font-bold leading-tight tracking-tight text-gray-900 break-keep">
-          {title}
-        </h1>
-        <div className="flex items-center gap-3 mt-6 text-[14px] text-gray-400">
-          {author?.image && (
-            <Image
-              src={author.image}
-              alt={author.name ?? ''}
-              width={28}
-              height={28}
-              className="rounded-full"
-            />
-          )}
-          {author?.name && (
-            <span className="font-medium text-gray-600">{author.name}</span>
-          )}
-          {author?.name && publishedAt && (
-            <span className="text-gray-300">{'·'}</span>
+      <header className="mb-12 pt-8">
+        <div className="flex items-center gap-2.5 mb-5">
+          {category && (
+            <span className="text-[12px] font-semibold uppercase tracking-wider text-gray-900 bg-gray-100 px-2 py-0.5 rounded">
+              {category}
+            </span>
           )}
           {publishedAt && (
-            <time dateTime={publishedAt}>
+            <time dateTime={publishedAt} className="text-[13px] text-gray-300">
               {new Date(publishedAt).toLocaleDateString('ko-KR', {
                 year: 'numeric',
                 month: 'long',
@@ -61,6 +43,23 @@ export function PostDetail({
             </time>
           )}
         </div>
+        <h1 className="text-[32px] md:text-[38px] font-extrabold leading-[1.25] tracking-tight text-gray-900 break-keep">
+          {title}
+        </h1>
+        {author?.name && (
+          <div className="flex items-center gap-2.5 mt-6">
+            {author.image && (
+              <Image
+                src={author.image}
+                alt={author.name}
+                width={24}
+                height={24}
+                className="rounded-full"
+              />
+            )}
+            <span className="text-[13px] text-gray-400">{author.name}</span>
+          </div>
+        )}
       </header>
       {coverImage && (
         <Image
@@ -68,7 +67,7 @@ export function PostDetail({
           alt={title}
           width={800}
           height={400}
-          className="w-full rounded-2xl mb-12 object-cover"
+          className="w-full rounded-xl mb-12 object-cover"
           priority
         />
       )}

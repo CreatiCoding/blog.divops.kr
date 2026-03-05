@@ -47,12 +47,12 @@ export default async function HomePage() {
   }));
 
   return (
-    <section className="max-w-[720px] mx-auto px-6 py-16">
-      <div className="mb-12">
-        <h1 className="text-[32px] font-bold tracking-tight text-gray-900 leading-tight">
+    <section className="max-w-[720px] mx-auto px-6 pt-20 pb-16">
+      <div className="mb-16">
+        <h1 className="text-[28px] font-bold tracking-tight text-gray-900">
           Blog
         </h1>
-        <p className="mt-3 text-[16px] text-gray-500 leading-relaxed">
+        <p className="mt-2 text-[15px] text-gray-400">
           DevOps와 프론트엔드 개발에 대한 이야기
         </p>
       </div>
