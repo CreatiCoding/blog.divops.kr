@@ -51,8 +51,7 @@ export const accounts = pgTable(
 );
 
 export const sessions = pgTable('session', {
-  id: text('id').primaryKey().$defaultFn(createId),
-  sessionToken: text('sessionToken').notNull().unique(),
+  sessionToken: text('sessionToken').primaryKey(),
   userId: text('userId')
     .notNull()
     .references(() => users.id, { onDelete: 'cascade' }),
@@ -63,14 +62,11 @@ export const verificationTokens = pgTable(
   'verificationToken',
   {
     identifier: text('identifier').notNull(),
-    token: text('token').notNull().unique(),
+    token: text('token').notNull(),
     expires: timestamp('expires', { mode: 'date' }).notNull(),
   },
   (table) => [
-    uniqueIndex('verificationToken_identifier_token_key').on(
-      table.identifier,
-      table.token
-    ),
+    primaryKey({ columns: [table.identifier, table.token] }),
   ]
 );
 
