@@ -44,18 +44,13 @@ jobs:
     env:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
       AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
-      AUTH_GITHUB_ID: ${{ secrets.AUTH_GITHUB_ID }}
-      AUTH_GITHUB_SECRET: ${{ secrets.AUTH_GITHUB_SECRET }}
-      S3_ENDPOINT: ${{ secrets.S3_ENDPOINT }}
-      S3_ACCESS_KEY: ${{ secrets.S3_ACCESS_KEY }}
-      S3_SECRET_KEY: ${{ secrets.S3_SECRET_KEY }}
     steps:
       - uses: actions/checkout@v4
       - uses: jdx/mise-action@v2
       - name: Install dependencies
         run: yarn install --immutable
       - name: Install Playwright browsers
-        run: yarn playwright install --with-deps chromium
+        run: yarn workspace @blog/service exec playwright install --with-deps chromium
       - name: Build
         run: yarn build
       - name: Run E2E tests
