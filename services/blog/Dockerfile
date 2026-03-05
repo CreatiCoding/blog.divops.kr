@@ -17,18 +17,22 @@ COPY --from=deps /app/.pnp.cjs /app/.pnp.loader.mjs ./
 COPY --from=deps /app/.yarn ./.yarn
 COPY --from=deps /app/.yarnrc.yml ./
 RUN yarn workspace @blog/service build
+# production 의존성만 남기기 (dev 캐시 제거)
+RUN yarn workspaces focus @blog/service --production
 
-FROM base AS runner
+FROM node:22-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production
+
 RUN addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 nextjs
 
-# PnP 런타임에 필요한 최소 파일만 복사
 COPY --from=builder --chown=nextjs:nodejs /app/package.json /app/yarn.lock /app/.yarnrc.yml ./
 COPY --from=builder --chown=nextjs:nodejs /app/.yarn ./.yarn
 COPY --from=builder --chown=nextjs:nodejs /app/.pnp.cjs /app/.pnp.loader.mjs ./
 COPY --from=builder --chown=nextjs:nodejs /app/services/blog/package.json ./services/blog/
+COPY --from=builder --chown=nextjs:nodejs /app/packages/fixtures/package.json ./packages/fixtures/
+COPY --from=builder --chown=nextjs:nodejs /app/packages/testing/package.json ./packages/testing/
 COPY --from=builder --chown=nextjs:nodejs /app/services/blog/.next ./services/blog/.next
 COPY --from=builder --chown=nextjs:nodejs /app/services/blog/next.config.ts ./services/blog/
 
