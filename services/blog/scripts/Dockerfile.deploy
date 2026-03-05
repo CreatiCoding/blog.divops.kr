@@ -2,14 +2,29 @@ FROM node:22-alpine AS builder
 RUN corepack enable
 WORKDIR /app
 
-# 로컬 의존성 그대로 복사 (yarn install 스킵)
 COPY package.json yarn.lock .yarnrc.yml ./
 COPY .yarn ./.yarn
-COPY .pnp.cjs .pnp.loader.mjs ./
+COPY services/blog/package.json ./services/blog/
+COPY packages/fixtures/package.json ./packages/fixtures/
+COPY packages/testing/package.json ./packages/testing/
 
-# 소스 복사 후 빌드만 실행
+# 프로젝트 전용 캐시로 오프라인 설치
+RUN --mount=type=bind,from=yarn-cache,target=/tmp/yarn-cache \
+    mkdir -p /root/.yarn/berry/cache && \
+    cp /tmp/yarn-cache/*.zip /root/.yarn/berry/cache/ 2>/dev/null || true && \
+    yarn install --immutable
+
 COPY . .
-RUN yarn workspace @blog/service build
+
+# 로컬 .next 캐시로 incremental build
+RUN --mount=type=bind,from=next-cache,target=/tmp/next-cache \
+    mkdir -p services/blog/.next && \
+    cp -r /tmp/next-cache/cache services/blog/.next/cache 2>/dev/null || true; \
+    yarn workspace @blog/service build
+
+# production 의존성만 남기기
+RUN yarn workspaces focus @blog/service --production && \
+    rm -rf /root/.yarn/berry/cache
 
 FROM node:22-alpine AS runner
 RUN corepack enable

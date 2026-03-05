@@ -23,6 +23,7 @@ node_modules
 .next/
 .env*.local
 services/blog/scripts/.env
+.yarn-docker-cache
 
 # Test results
 playwright-report/
