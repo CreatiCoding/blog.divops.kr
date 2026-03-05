@@ -1,10 +1,5 @@
 FROM node:22-alpine AS base
-
-RUN apk add --no-cache curl bash \
-    && curl https://mise.run | sh
-ENV PATH="/root/.local/bin:/root/.local/share/mise/shims:$PATH"
-COPY mise.toml ./
-RUN mise trust && mise install
+RUN corepack enable
 
 FROM base AS deps
 WORKDIR /app
