@@ -11,7 +11,7 @@ jobs:
     steps:
       - name: Deploy to Dokploy
         run: |
-          curl -f -X POST "https://dokploy.creco.dev/api/application.redeploy" \
+          curl -f -X POST "https://dokploy.creco.dev/api/application.deploy" \
             -H "x-api-key: ${{ secrets.DOKPLOY_API_TOKEN }}" \
             -H "Content-Type: application/json" \
             -d '{"applicationId": "PAsCNfn9M18-gIzzR9Zld"}'
