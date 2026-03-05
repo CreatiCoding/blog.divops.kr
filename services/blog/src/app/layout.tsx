@@ -36,7 +36,7 @@ export default function RootLayout({
               href="/"
               className="text-[15px] font-semibold tracking-tight text-gray-900 dark:text-gray-100 hover:text-gray-500 dark:hover:text-gray-400 transition-colors"
             >
-              divops.kr
+              blog.divops.kr
             </Link>
             <ThemeToggle />
           </nav>
