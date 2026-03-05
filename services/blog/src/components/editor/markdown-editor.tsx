@@ -115,14 +115,14 @@ export function MarkdownEditor({ content, onChange }: MarkdownEditorProps) {
 
   return (
     <div>
-      <div className="flex items-center border-b border-gray-100 px-2">
+      <div className="flex items-center border-b border-gray-100 dark:border-gray-800 px-2">
         <button
           type="button"
           onClick={() => setMode('markdown')}
           className={`px-3 py-2.5 text-xs font-medium cursor-pointer transition-colors relative ${
             mode === 'markdown'
-              ? 'text-gray-900 after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-gray-900 after:rounded-full'
-              : 'text-gray-400 hover:text-gray-600'
+              ? 'text-gray-900 dark:text-gray-100 after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-gray-900 dark:after:bg-gray-100 after:rounded-full'
+              : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'
           }`}
         >
           Markdown
@@ -132,8 +132,8 @@ export function MarkdownEditor({ content, onChange }: MarkdownEditorProps) {
           onClick={() => setMode('preview')}
           className={`px-3 py-2.5 text-xs font-medium cursor-pointer transition-colors relative ${
             mode === 'preview'
-              ? 'text-gray-900 after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-gray-900 after:rounded-full'
-              : 'text-gray-400 hover:text-gray-600'
+              ? 'text-gray-900 dark:text-gray-100 after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-gray-900 dark:after:bg-gray-100 after:rounded-full'
+              : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'
           }`}
         >
           Preview
@@ -145,7 +145,7 @@ export function MarkdownEditor({ content, onChange }: MarkdownEditorProps) {
               type="button"
               onClick={() => fileInputRef.current?.click()}
               disabled={uploading}
-              className="px-2.5 py-1 text-xs text-gray-400 rounded-md cursor-pointer hover:text-gray-600 hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-2.5 py-1 text-xs text-gray-400 rounded-md cursor-pointer hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {uploading ? 'Uploading...' : '+ Image'}
             </button>
@@ -168,7 +168,7 @@ export function MarkdownEditor({ content, onChange }: MarkdownEditorProps) {
           onDrop={handleDrop}
           onDragOver={(e) => e.preventDefault()}
           onPaste={handlePaste}
-          className="w-full p-4 min-h-[500px] font-mono text-[15px] leading-relaxed text-gray-900 resize-y outline-none"
+          className="w-full p-4 min-h-[500px] font-mono text-[15px] leading-relaxed text-gray-900 dark:text-gray-100 bg-transparent resize-y outline-none placeholder:text-gray-300 dark:placeholder:text-gray-600"
           placeholder="Write your markdown here... (drag & drop or paste images)"
           spellCheck={false}
         />

@@ -101,7 +101,7 @@ export default function WritePage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <div className="text-sm text-gray-400">Loading...</div>
+        <div className="text-sm text-gray-400 dark:text-gray-500">Loading...</div>
       </div>
     );
   }
@@ -109,14 +109,14 @@ export default function WritePage() {
   return (
     <div className="max-w-4xl mx-auto space-y-8">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold text-gray-900">
+        <h1 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
           {editId ? 'Edit Post' : 'New Post'}
         </h1>
         <div className="flex items-center gap-2">
           {editId && (
             <button
               onClick={handleDelete}
-              className="px-3 py-1.5 text-sm text-red-500 rounded-lg cursor-pointer hover:bg-red-50 transition-colors"
+              className="px-3 py-1.5 text-sm text-red-500 rounded-lg cursor-pointer hover:bg-red-50 dark:hover:bg-red-950 transition-colors"
             >
               Delete
             </button>
@@ -124,23 +124,23 @@ export default function WritePage() {
           <button
             onClick={() => handleSubmit(false)}
             disabled={saving}
-            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Save Draft
           </button>
           <button
             onClick={() => handleSubmit(true)}
             disabled={saving}
-            className="px-4 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg cursor-pointer hover:bg-gray-800 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-4 py-2 text-sm font-medium text-white bg-gray-900 dark:bg-gray-100 dark:text-gray-900 rounded-lg cursor-pointer hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Publish
           </button>
         </div>
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-200/60 shadow-sm p-6 space-y-5">
+      <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200/60 dark:border-gray-800/60 shadow-sm p-6 space-y-5">
         <div>
-          <label className="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-1.5">
+          <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1.5">
             Title
           </label>
           <input
@@ -148,27 +148,27 @@ export default function WritePage() {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             onBlur={handleSlugGenerate}
-            className="w-full border border-gray-200 rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-300 transition-shadow placeholder:text-gray-300"
+            className="w-full border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900/10 dark:focus:ring-gray-100/10 focus:border-gray-300 dark:focus:border-gray-600 transition-shadow placeholder:text-gray-300 dark:placeholder:text-gray-600"
             placeholder="Post title"
           />
         </div>
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-1.5">
+            <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1.5">
               Slug
             </label>
             <input
               type="text"
               value={slug}
               onChange={(e) => setSlug(e.target.value)}
-              className="w-full border border-gray-200 rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-300 transition-shadow placeholder:text-gray-300 font-mono"
+              className="w-full border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900/10 dark:focus:ring-gray-100/10 focus:border-gray-300 dark:focus:border-gray-600 transition-shadow placeholder:text-gray-300 dark:placeholder:text-gray-600 font-mono"
               placeholder="post-slug"
             />
           </div>
 
           <div ref={categoryRef} className="relative">
-            <label className="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-1.5">
+            <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1.5">
               Category
             </label>
             <input
@@ -179,7 +179,7 @@ export default function WritePage() {
                 setShowCategoryDropdown(true);
               }}
               onFocus={() => setShowCategoryDropdown(true)}
-              className="w-full border border-gray-200 rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-300 transition-shadow placeholder:text-gray-300"
+              className="w-full border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900/10 dark:focus:ring-gray-100/10 focus:border-gray-300 dark:focus:border-gray-600 transition-shadow placeholder:text-gray-300 dark:placeholder:text-gray-600"
               placeholder="Select or type a category"
             />
             {showCategoryDropdown && (() => {
@@ -188,12 +188,12 @@ export default function WritePage() {
               );
               if (filtered.length === 0) return null;
               return (
-                <ul className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-48 overflow-y-auto">
+                <ul className="absolute z-10 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg max-h-48 overflow-y-auto">
                   {filtered.map((c) => (
                     <li key={c}>
                       <button
                         type="button"
-                        className="w-full text-left px-3.5 py-2 cursor-pointer hover:bg-gray-50 text-sm transition-colors"
+                        className="w-full text-left px-3.5 py-2 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 text-sm text-gray-900 dark:text-gray-100 transition-colors"
                         onClick={() => {
                           setCategory(c);
                           setShowCategoryDropdown(false);
@@ -210,20 +210,20 @@ export default function WritePage() {
         </div>
 
         <div>
-          <label className="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-1.5">
+          <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1.5">
             Excerpt
           </label>
           <textarea
             value={excerpt}
             onChange={(e) => setExcerpt(e.target.value)}
-            className="w-full border border-gray-200 rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-300 transition-shadow resize-none placeholder:text-gray-300"
+            className="w-full border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900/10 dark:focus:ring-gray-100/10 focus:border-gray-300 dark:focus:border-gray-600 transition-shadow resize-none placeholder:text-gray-300 dark:placeholder:text-gray-600"
             rows={2}
             placeholder="Short description"
           />
         </div>
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-200/60 shadow-sm overflow-hidden">
+      <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200/60 dark:border-gray-800/60 shadow-sm overflow-hidden">
         <MarkdownEditor key={editId ?? 'new'} content={content} onChange={setContent} />
       </div>
     </div>
