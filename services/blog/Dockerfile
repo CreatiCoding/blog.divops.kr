@@ -21,7 +21,8 @@ RUN yarn workspaces focus @blog/service --production
 
 # 2. 소스 복사 + 빌드
 COPY --chown=nextjs:nodejs . .
-RUN --mount=type=cache,target=/app/services/blog/.next/cache \
+RUN mkdir -p /app/services/blog/.next
+RUN --mount=type=cache,target=/app/services/blog/.next/cache,uid=1001,gid=1001 \
     yarn workspace @blog/service build
 
 EXPOSE 3000
