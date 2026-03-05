@@ -18,11 +18,10 @@ ENV NODE_ENV=production
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-COPY --from=builder --chown=nextjs:nodejs /app/services/blog/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/services/blog/.next/static ./services/blog/.next/static
+COPY --from=builder --chown=nextjs:nodejs /app ./
 
 USER nextjs
 EXPOSE 3000
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
-CMD ["node", "services/blog/server.js"]
+CMD ["yarn", "workspace", "@blog/service", "start"]
