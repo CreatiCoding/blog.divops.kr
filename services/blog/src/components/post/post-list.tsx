@@ -15,35 +15,55 @@ type Post = {
 
 export function PostList({ posts }: { posts: Post[] }) {
   if (posts.length === 0) {
-    return <p className="text-gray-500">아직 작성된 글이 없습니다.</p>;
+    return (
+      <div className="py-20 text-center">
+        <p className="text-gray-400 text-[15px]">아직 작성된 글이 없습니다.</p>
+      </div>
+    );
   }
 
   return (
-    <div className="space-y-8">
+    <div className="flex flex-col gap-1">
       {posts.map((post) => (
-        <article key={post.id} className="border-b pb-8">
-          <Link href={`/${post.slug}`} className="group">
-            <h2 className="text-2xl font-bold group-hover:text-blue-600 transition-colors">
-              {post.title}
-            </h2>
-            {post.excerpt && (
-              <p className="mt-2 text-gray-600 line-clamp-2">{post.excerpt}</p>
-            )}
-            <div className="mt-3 flex items-center gap-2 text-sm text-gray-500">
+        <Link key={post.id} href={`/${post.slug}`} className="group block">
+          <article className="py-7 -mx-4 px-4 rounded-2xl transition-colors duration-200 hover:bg-gray-50">
+            <div className="flex items-center gap-2 mb-3">
               {post.category && (
-                <span className="px-2 py-0.5 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
+                <span className="text-[13px] font-semibold text-blue-500">
                   {post.category}
                 </span>
               )}
-              {post.author?.name && <span>{post.author.name}</span>}
+              {post.category && post.publishedAt && (
+                <span className="text-gray-300">{'·'}</span>
+              )}
               {post.publishedAt && (
-                <time dateTime={post.publishedAt}>
-                  {new Date(post.publishedAt).toLocaleDateString('ko-KR')}
+                <time
+                  dateTime={post.publishedAt}
+                  className="text-[13px] text-gray-400"
+                >
+                  {new Date(post.publishedAt).toLocaleDateString('ko-KR', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                  })}
                 </time>
               )}
             </div>
-          </Link>
-        </article>
+            <h2 className="text-[20px] font-bold text-gray-900 leading-snug tracking-tight group-hover:text-blue-500 transition-colors duration-200">
+              {post.title}
+            </h2>
+            {post.excerpt && (
+              <p className="mt-2 text-[15px] text-gray-500 leading-relaxed line-clamp-2">
+                {post.excerpt}
+              </p>
+            )}
+            {post.author?.name && (
+              <p className="mt-3 text-[13px] text-gray-400">
+                {post.author.name}
+              </p>
+            )}
+          </article>
+        </Link>
       ))}
     </div>
   );

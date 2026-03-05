@@ -90,7 +90,11 @@ describe('PostDetail', () => {
     const timeEl = screen.getByRole('time');
     expect(timeEl).toHaveAttribute('datetime', '2025-03-01T00:00:00.000Z');
     expect(timeEl).toHaveTextContent(
-      new Date('2025-03-01T00:00:00.000Z').toLocaleDateString('ko-KR'),
+      new Date('2025-03-01T00:00:00.000Z').toLocaleDateString('ko-KR', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      }),
     );
   });
 });

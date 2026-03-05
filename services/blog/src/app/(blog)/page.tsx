@@ -47,9 +47,16 @@ export default async function HomePage() {
   }));
 
   return (
-    <main className="max-w-4xl mx-auto px-4 py-8">
-      <h1 className="text-4xl font-bold mb-8">blog.divops.kr</h1>
+    <section className="max-w-[720px] mx-auto px-6 py-16">
+      <div className="mb-12">
+        <h1 className="text-[32px] font-bold tracking-tight text-gray-900 leading-tight">
+          Blog
+        </h1>
+        <p className="mt-3 text-[16px] text-gray-500 leading-relaxed">
+          DevOps와 프론트엔드 개발에 대한 이야기
+        </p>
+      </div>
       <PostList posts={serialized} />
-    </main>
+    </section>
   );
 }

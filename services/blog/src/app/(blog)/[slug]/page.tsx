@@ -80,7 +80,7 @@ export default async function PostPage({
   if (!post) notFound();
 
   return (
-    <main className="max-w-4xl mx-auto px-4 py-8">
+    <section className="max-w-[720px] mx-auto px-6 py-12">
       <PostDetail
         title={post.title}
         category={post.category}
@@ -89,6 +89,6 @@ export default async function PostPage({
         publishedAt={post.publishedAt?.toISOString() ?? null}
         author={post.author}
       />
-    </main>
+    </section>
   );
 }

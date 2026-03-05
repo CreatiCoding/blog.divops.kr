@@ -56,8 +56,8 @@ describe('PostList', () => {
     const { container } = render(
       <PostList posts={[createPost({ excerpt: null })]} />,
     );
-    const paragraphs = container.querySelectorAll('article p');
-    expect(paragraphs).toHaveLength(0);
+    // excerpt용 p만 없어야 함 (author.name p는 있을 수 있음)
+    expect(screen.queryByText('테스트 요약입니다.')).not.toBeInTheDocument();
   });
 
   it('UI-006: 작성자 이름을 표시한다', () => {
@@ -83,7 +83,11 @@ describe('PostList', () => {
     const timeEl = screen.getByRole('time');
     expect(timeEl).toHaveAttribute('datetime', '2025-01-15T00:00:00.000Z');
     expect(timeEl).toHaveTextContent(
-      new Date('2025-01-15T00:00:00.000Z').toLocaleDateString('ko-KR'),
+      new Date('2025-01-15T00:00:00.000Z').toLocaleDateString('ko-KR', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      }),
     );
   });
 

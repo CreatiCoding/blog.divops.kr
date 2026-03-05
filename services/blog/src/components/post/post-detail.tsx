@@ -25,28 +25,39 @@ export function PostDetail({
   author,
 }: PostDetailProps) {
   return (
-    <article className="max-w-3xl mx-auto">
-      <header className="mb-8">
+    <article>
+      <header className="mb-12 pt-4">
         {category && (
-          <span className="inline-block px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium mb-3">
+          <span className="inline-block text-[14px] font-semibold text-blue-500 mb-4">
             {category}
           </span>
         )}
-        <h1 className="text-4xl font-bold mb-4">{title}</h1>
-        <div className="flex items-center gap-3 text-gray-600">
+        <h1 className="text-[36px] md:text-[42px] font-bold leading-tight tracking-tight text-gray-900 break-keep">
+          {title}
+        </h1>
+        <div className="flex items-center gap-3 mt-6 text-[14px] text-gray-400">
           {author?.image && (
             <Image
               src={author.image}
               alt={author.name ?? ''}
-              width={32}
-              height={32}
+              width={28}
+              height={28}
               className="rounded-full"
             />
           )}
-          {author?.name && <span>{author.name}</span>}
+          {author?.name && (
+            <span className="font-medium text-gray-600">{author.name}</span>
+          )}
+          {author?.name && publishedAt && (
+            <span className="text-gray-300">{'·'}</span>
+          )}
           {publishedAt && (
             <time dateTime={publishedAt}>
-              {new Date(publishedAt).toLocaleDateString('ko-KR')}
+              {new Date(publishedAt).toLocaleDateString('ko-KR', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+              })}
             </time>
           )}
         </div>
@@ -57,7 +68,7 @@ export function PostDetail({
           alt={title}
           width={800}
           height={400}
-          className="w-full rounded-lg mb-8 object-cover"
+          className="w-full rounded-2xl mb-12 object-cover"
           priority
         />
       )}

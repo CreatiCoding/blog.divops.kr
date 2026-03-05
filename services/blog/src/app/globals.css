@@ -1,6 +1,124 @@
 @import 'tailwindcss';
 @plugin '@tailwindcss/typography';
 
+/* Pretendard font */
+@font-face {
+  font-family: 'Pretendard';
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+  src: url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css');
+}
+
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css');
+
+/* Base styles */
+html {
+  font-family: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont,
+    system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo',
+    'Noto Sans KR', 'Malgun Gothic', 'Apple Color Emoji', 'Segoe UI Emoji',
+    'Segoe UI Symbol', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: #fafafa;
+  color: #191f28;
+}
+
+/* Custom prose styles for article content */
+.prose {
+  --tw-prose-body: #333d4b;
+  --tw-prose-headings: #191f28;
+  --tw-prose-links: #3182f6;
+  --tw-prose-bold: #191f28;
+  --tw-prose-code: #191f28;
+  --tw-prose-quotes: #4e5968;
+  --tw-prose-quote-borders: #e5e8eb;
+  line-height: 1.8;
+  font-size: 17px;
+}
+
+.prose h1 {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.prose h2 {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-top: 2.5em;
+  margin-bottom: 1em;
+}
+
+.prose h3 {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin-top: 2em;
+}
+
+.prose p {
+  margin-top: 1.25em;
+  margin-bottom: 1.25em;
+}
+
+.prose code {
+  background-color: #f2f4f6;
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+  font-size: 0.9em;
+  font-weight: 500;
+}
+
+.prose code::before,
+.prose code::after {
+  content: none;
+}
+
+.prose pre {
+  background-color: #1e1e1e;
+  border-radius: 12px;
+  padding: 1.25em 1.5em;
+  overflow-x: auto;
+}
+
+.prose pre code {
+  background-color: transparent;
+  padding: 0;
+  font-size: 0.875em;
+}
+
+.prose blockquote {
+  border-left: 3px solid #3182f6;
+  background-color: #f8f9fa;
+  padding: 1em 1.5em;
+  border-radius: 0 8px 8px 0;
+  font-style: normal;
+}
+
+.prose img {
+  border-radius: 12px;
+  margin-top: 2em;
+  margin-bottom: 2em;
+}
+
+.prose a {
+  color: #3182f6;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.prose a:hover {
+  text-decoration: underline;
+}
+
+.prose hr {
+  border-color: #e5e8eb;
+  margin-top: 3em;
+  margin-bottom: 3em;
+}
+
 /* TipTap editor styles */
 .ProseMirror {
   outline: none;
