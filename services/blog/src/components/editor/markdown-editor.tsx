@@ -53,6 +53,8 @@ export function MarkdownEditor({ content, onChange }: MarkdownEditorProps) {
   const [uploading, setUploading] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const contentRef = useRef(content);
+  contentRef.current = content;
 
   const handleUpload = useCallback(
     async (file: File) => {
@@ -65,15 +67,15 @@ export function MarkdownEditor({ content, onChange }: MarkdownEditorProps) {
       try {
         const url = await uploadImage(file);
         const markdown = `![${file.name}](${url})`;
-        onChange(content.replace(placeholder, markdown));
+        onChange(contentRef.current.replace(placeholder, markdown));
       } catch (e) {
         const errMsg = e instanceof Error ? e.message : 'Upload failed';
-        onChange(content.replace(placeholder, `<!-- Upload failed: ${errMsg} -->`));
+        onChange(contentRef.current.replace(placeholder, `<!-- Upload failed: ${errMsg} -->`));
       } finally {
         setUploading(false);
       }
     },
-    [content, onChange],
+    [onChange],
   );
 
   const handleDrop = useCallback(
