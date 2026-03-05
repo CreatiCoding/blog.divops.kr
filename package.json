@@ -1,0 +1,18 @@
+{
+  "name": "blog-divops-kr",
+  "private": true,
+  "workspaces": [
+    "services/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "yarn workspace @blog/service dev",
+    "build": "yarn workspace @blog/service build",
+    "start": "yarn workspace @blog/service start",
+    "lint": "yarn workspace @blog/service lint",
+    "typecheck": "yarn workspace @blog/service typecheck",
+    "test": "yarn workspace @blog/service test",
+    "e2e": "yarn workspace @blog/service e2e"
+  },
+  "packageManager": "yarn@4.6.0"
+}
