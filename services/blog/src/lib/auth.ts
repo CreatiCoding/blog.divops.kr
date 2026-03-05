@@ -22,7 +22,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   ],
   callbacks: {
     async signIn({ profile }) {
-      const allowedUsers = ['CreatiCoding'];
+      const allowedUsers = (process.env.AUTH_ALLOWED_USERS ?? '').split(',').map(u => u.trim()).filter(Boolean);
+      if (allowedUsers.length === 0) return true;
       return allowedUsers.includes(profile?.login as string);
     },
     async session({ session, user }) {
