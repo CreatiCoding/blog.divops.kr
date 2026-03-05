@@ -1,7 +1,7 @@
 FROM node:22-alpine AS base
 RUN corepack enable
 
-FROM base AS deps
+FROM base AS builder
 WORKDIR /app
 COPY package.json yarn.lock .yarnrc.yml ./
 COPY .yarn ./.yarn
@@ -9,10 +9,6 @@ COPY services/blog/package.json ./services/blog/
 COPY packages/fixtures/package.json ./packages/fixtures/
 COPY packages/testing/package.json ./packages/testing/
 RUN yarn install --immutable
-
-FROM base AS builder
-WORKDIR /app
-COPY --from=deps /app ./
 COPY . .
 RUN yarn workspace @blog/service build
 
