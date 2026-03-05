@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   description: 'DevOps와 프론트엔드 기술 블로그',
   metadataBase: new URL('https://blog.divops.kr'),
   verification: {
-    google: 'zGIoA0ePFDiykqYdBi78RnsNMoQ-ru-AIYavfAmSZMc',
+    google: 'zpZHz5nGuK9g_3uNl7twb-q5OZXdG5mpt-g094vneb4',
   },
 };
 
