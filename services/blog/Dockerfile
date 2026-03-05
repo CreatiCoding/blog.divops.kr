@@ -21,6 +21,7 @@ COPY . .
 RUN --mount=type=cache,target=/app/services/blog/.next/cache \
     yarn workspace @blog/service build
 
+RUN chmod -R a+r /root/.yarn
 USER nextjs
 EXPOSE 3000
 ENV PORT=3000
