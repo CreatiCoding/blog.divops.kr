@@ -8,14 +8,13 @@ COPY .yarn ./.yarn
 COPY services/blog/package.json ./services/blog/
 COPY packages/fixtures/package.json ./packages/fixtures/
 COPY packages/testing/package.json ./packages/testing/
-RUN yarn config set enableGlobalCache false && yarn install --immutable
+RUN yarn install --immutable
 
 FROM base AS builder
 WORKDIR /app
 COPY . .
 COPY --from=deps /app/.pnp.cjs /app/.pnp.loader.mjs ./
 COPY --from=deps /app/.yarn ./.yarn
-COPY --from=deps /app/.yarnrc.yml ./
 RUN yarn workspace @blog/service build
 # production 의존성만 남기기 (dev 캐시 제거)
 RUN yarn workspaces focus @blog/service --production
