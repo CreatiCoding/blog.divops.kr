@@ -12,8 +12,10 @@ RUN yarn config set enableGlobalCache false && yarn install --immutable
 
 FROM base AS builder
 WORKDIR /app
-COPY --from=deps /app ./
 COPY . .
+COPY --from=deps /app/.pnp.cjs /app/.pnp.loader.mjs ./
+COPY --from=deps /app/.yarn ./.yarn
+COPY --from=deps /app/.yarnrc.yml ./
 RUN yarn workspace @blog/service build
 
 FROM base AS runner
