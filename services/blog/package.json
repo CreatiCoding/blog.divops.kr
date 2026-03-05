@@ -15,7 +15,8 @@
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
     "db:seed": "tsx drizzle/seed.ts",
-    "db:studio": "drizzle-kit studio"
+    "db:studio": "drizzle-kit studio",
+    "deploy": "bash scripts/deploy.sh"
   },
   "dependencies": {
     "@auth/drizzle-adapter": "^1.0.0",
