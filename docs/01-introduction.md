@@ -32,7 +32,7 @@
 | **프레임워크** | Next.js (App Router) | 16 |
 | **언어** | TypeScript | 5.x (strict) |
 | **스타일링** | Tailwind CSS | v4 |
-| **DB** | PostgreSQL + Prisma ORM | PostgreSQL 15 / Prisma 6.x |
+| **DB** | PostgreSQL + Drizzle ORM | PostgreSQL 15 / Drizzle 0.39.x |
 | **인증** | Auth.js (NextAuth v5) | v5 |
 | **에디터** | TipTap | 2.x |
 | **이미지 저장** | MinIO (S3 호환) | 기존 운영 중 |

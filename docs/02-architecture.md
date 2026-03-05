@@ -50,14 +50,16 @@ blog.divops.kr/
 │       │   │   ├── post/            # 글 표시 컴포넌트
 │       │   │   └── ui/              # 공통 UI 컴포넌트
 │       │   ├── lib/
-│       │   │   ├── prisma.ts        # Prisma 클라이언트
+│       │   │   ├── db.ts            # Drizzle 클라이언트
 │       │   │   ├── s3.ts            # MinIO (S3) 클라이언트
 │       │   │   └── auth.ts          # Auth.js 설정
 │       │   └── types/
 │       │       └── index.ts
-│       ├── prisma/
-│       │   ├── schema.prisma        # DB 스키마
+│       ├── drizzle/
+│       │   ├── schema.ts            # DB 스키마 (TypeScript)
+│       │   ├── utils.ts             # 유틸 (createId 등)
 │       │   └── seed.ts              # 시드 데이터
+│       ├── drizzle.config.ts        # Drizzle Kit 설정
 │       ├── e2e/                     # Playwright E2E 테스트
 │       │   ├── blog.spec.ts
 │       │   └── admin.spec.ts
@@ -78,7 +80,7 @@ blog.divops.kr/
 │   │   └── package.json
 │   └── testing/                     # 테스트 공유 유틸
 │       ├── src/
-│       │   ├── prisma-mock.ts       # Prisma 클라이언트 mock
+│       │   ├── prisma-mock.ts       # Drizzle DB mock
 │       │   ├── s3-mock.ts           # S3 클라이언트 mock
 │       │   ├── auth-mock.ts         # Auth.js mock
 │       │   ├── render.tsx           # 커스텀 render (providers 포함)
@@ -93,101 +95,16 @@ blog.divops.kr/
 
 ## DB 스키마
 
-Prisma ORM을 사용하며, Auth.js 호환 스키마 + 블로그 테이블을 포함합니다.
+Drizzle ORM을 사용하며, Auth.js 호환 스키마 + 블로그 테이블을 포함합니다.
 
-```prisma
-// prisma/schema.prisma
+스키마는 `services/blog/drizzle/schema.ts`에 TypeScript로 정의됩니다.
 
-generator client {
-  provider = "prisma-client-js"
-}
-
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-}
-
-// ─── Auth.js 호환 테이블 ───
-
-model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String?   @unique
-  emailVerified DateTime?
-  image         String?
-  role          Role      @default(USER)
-
-  accounts Account[]
-  sessions Session[]
-  posts    Post[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model Account {
-  id                String  @id @default(cuid())
-  userId            String
-  type              String
-  provider          String
-  providerAccountId String
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
-  expires_at        Int?
-  token_type        String?
-  scope             String?
-  id_token          String? @db.Text
-  session_state     String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([provider, providerAccountId])
-}
-
-model Session {
-  id           String   @id @default(cuid())
-  sessionToken String   @unique
-  userId       String
-  expires      DateTime
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
-
-model VerificationToken {
-  identifier String
-  token      String   @unique
-  expires    DateTime
-
-  @@unique([identifier, token])
-}
-
-// ─── 블로그 테이블 ───
-
-model Post {
-  id          String     @id @default(cuid())
-  title       String
-  slug        String     @unique
-  content     String     @db.Text
-  excerpt     String?    @db.Text
-  coverImage  String?
-  published   Boolean    @default(false)
-  publishedAt DateTime?
-  authorId    String
-
-  author User @relation(fields: [authorId], references: [id])
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([slug])
-  @@index([published, publishedAt])
-}
-
-enum Role {
-  USER
-  ADMIN
-}
-```
+주요 테이블:
+- `user` - Auth.js 호환 사용자 테이블 (role: USER | ADMIN)
+- `account` - OAuth 계정 연동
+- `session` - 세션 관리
+- `verificationToken` - 이메일 인증 토큰
+- `post` - 블로그 글 (title, slug, content, published, authorId 등)
 
 ### 테이블 관계도
 
@@ -314,11 +231,11 @@ export default [
 // services/blog/src/lib/auth.ts
 import NextAuth from 'next-auth';
 import GitHub from 'next-auth/providers/github';
-import { PrismaAdapter } from '@auth/prisma-adapter';
-import { prisma } from './prisma';
+import { DrizzleAdapter } from '@auth/drizzle-adapter';
+import { db } from './db';
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
-  adapter: PrismaAdapter(prisma),
+  adapter: DrizzleAdapter(db),
   providers: [
     GitHub({
       clientId: process.env.AUTH_GITHUB_ID,
@@ -404,14 +321,17 @@ export async function POST(request: Request) {
 
 ```typescript
 // services/blog/src/app/(blog)/[slug]/page.tsx
+import { eq } from 'drizzle-orm';
+import { db } from '@/lib/db';
+import { posts } from '../../../../drizzle/schema';
 
 // 빌드 타임에 모든 글의 경로를 생성
 export async function generateStaticParams() {
-  const posts = await prisma.post.findMany({
-    where: { published: true },
-    select: { slug: true },
-  });
-  return posts.map((post) => ({ slug: post.slug }));
+  const allPosts = await db
+    .select({ slug: posts.slug })
+    .from(posts)
+    .where(eq(posts.published, true));
+  return allPosts.map((post) => ({ slug: post.slug }));
 }
 
 // ISR: 60초마다 재검증
@@ -430,7 +350,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const post = await prisma.post.findUnique({ where: { slug } });
+  const [post] = await db.select().from(posts).where(eq(posts.slug, slug));
 
   return {
     title: post?.title,
@@ -451,15 +371,17 @@ export async function generateMetadata({
 ```typescript
 // services/blog/src/app/sitemap.ts
 import type { MetadataRoute } from 'next';
-import { prisma } from '@/lib/prisma';
+import { eq } from 'drizzle-orm';
+import { db } from '@/lib/db';
+import { posts } from '../../drizzle/schema';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const posts = await prisma.post.findMany({
-    where: { published: true },
-    select: { slug: true, updatedAt: true },
-  });
+  const allPosts = await db
+    .select({ slug: posts.slug, updatedAt: posts.updatedAt })
+    .from(posts)
+    .where(eq(posts.published, true));
 
-  const postUrls = posts.map((post) => ({
+  const postUrls = allPosts.map((post) => ({
     url: `https://blog.divops.kr/${post.slug}`,
     lastModified: post.updatedAt,
     changeFrequency: 'weekly' as const,
@@ -484,7 +406,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 |------|------|------------|
 | **1** | 프로젝트 초기 설정 | Yarn Berry PnP, workspace, TypeScript |
 | **2** | Next.js 16 앱 생성 | `services/blog`, 기본 레이아웃 |
-| **3** | DB + Prisma 설정 | 스키마, 마이그레이션, 시드 |
+| **3** | DB + Drizzle 설정 | 스키마, 마이그레이션, 시드 |
 | **4** | Auth.js (인증) | GitHub OAuth, proxy.ts, 세션 관리 |
 | **5** | 블로그 CRUD API | 글 생성/수정/삭제/조회 API Routes |
 | **6** | 이미지 업로드 | MinIO 연동, 업로드 API |

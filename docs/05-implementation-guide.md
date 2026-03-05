@@ -23,8 +23,8 @@
 | **Next.js 16** | `middleware.ts` → `proxy.ts`, `params`/`searchParams`/`cookies`/`headers` 모두 `await` 필수 |
 | **Turbopack** | Next.js 16 기본 번들러. `next.config.ts`에서 webpack 커스텀 설정 사용 시 호환성 확인 필요 |
 | **mise** | `mise.toml`에 node, yarn 버전 명시. 로컬/CI 모두 `mise install`로 통일 |
-| **Prisma + PnP** | `postinstall` 스크립트에 `prisma generate` 추가 필요 |
-| **Auth.js v5** | `@auth/prisma-adapter` 사용. adapter 스키마 정확히 일치해야 함 |
+| **Drizzle ORM** | 순수 JS, 바이너리 엔진 없음. `postinstall` 불필요. 스키마는 TypeScript로 정의 |
+| **Auth.js v5** | `@auth/drizzle-adapter` 사용. adapter 스키마 정확히 일치해야 함 |
 | **ESLint** | Next.js 16에서 `next lint` 제거됨. Flat Config 직접 구성 |
 
 ---
@@ -544,48 +544,46 @@ yarn build
 
 ---
 
-## Step 3: DB + Prisma 설정
+## Step 3: DB + Drizzle 설정
 
 ### 목표
-PostgreSQL + Prisma ORM 설정, Auth.js 호환 스키마, 시드 데이터
+PostgreSQL + Drizzle ORM 설정, Auth.js 호환 스키마, 시드 데이터
 
 ### 추가 의존성
 
 ```
-prisma (devDependencies)
-@prisma/client (dependencies)
+drizzle-orm (dependencies)
+postgres (dependencies)
+drizzle-kit (devDependencies)
+tsx (devDependencies)
 ```
 
 ### 생성할 파일
 
-#### `services/blog/prisma/schema.prisma`
+#### `services/blog/drizzle/schema.ts`
 
-02-architecture.md의 "DB 스키마" 섹션 참조. 전체 스키마를 그대로 사용합니다.
+TypeScript로 정의된 DB 스키마. Auth.js 호환 테이블 + 블로그 테이블 포함.
+`services/blog/drizzle/schema.ts` 파일 참조.
 
-#### `services/blog/prisma/seed.ts`
+#### `services/blog/drizzle/seed.ts`
 
 ```typescript
-import { PrismaClient } from '@prisma/client';
+import { drizzle } from 'drizzle-orm/postgres-js';
+import postgres from 'postgres';
+import { users, posts } from './schema';
 
-const prisma = new PrismaClient();
+const client = postgres(process.env.DATABASE_URL!);
+const db = drizzle(client);
 
 async function main() {
-  // 관리자 사용자 생성
-  const admin = await prisma.user.upsert({
-    where: { email: 'admin@divops.kr' },
-    update: {},
-    create: {
-      email: 'admin@divops.kr',
-      name: 'Admin',
-      role: 'ADMIN',
-    },
-  });
+  const [admin] = await db
+    .insert(users)
+    .values({ email: 'admin@divops.kr', name: 'Admin', role: 'ADMIN' })
+    .onConflictDoNothing()
+    .returning();
 
-  // 샘플 포스트 생성
-  await prisma.post.upsert({
-    where: { slug: 'hello-world' },
-    update: {},
-    create: {
+  if (admin) {
+    await db.insert(posts).values({
       title: 'Hello World',
       slug: 'hello-world',
       content: '<p>블로그의 첫 번째 글입니다. 환영합니다!</p>',
@@ -593,63 +591,48 @@ async function main() {
       published: true,
       publishedAt: new Date(),
       authorId: admin.id,
-    },
-  });
+    }).onConflictDoNothing();
+  }
 
   console.log('Seed completed');
 }
 
 main()
-  .catch((e) => {
-    console.error(e);
-    process.exit(1);
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });
+  .catch((e) => { console.error(e); process.exit(1); })
+  .finally(() => client.end());
 ```
 
-#### `services/blog/src/lib/prisma.ts`
+#### `services/blog/src/lib/db.ts`
 
 ```typescript
-import { PrismaClient } from '@prisma/client';
+import { drizzle } from 'drizzle-orm/postgres-js';
+import postgres from 'postgres';
+import * as schema from '../../../drizzle/schema';
 
-const globalForPrisma = globalThis as unknown as {
-  prisma: PrismaClient | undefined;
-};
-
-export const prisma = globalForPrisma.prisma ?? new PrismaClient();
-
-if (process.env.NODE_ENV !== 'production') {
-  globalForPrisma.prisma = prisma;
-}
+const client = postgres(process.env.DATABASE_URL!);
+export const db = drizzle(client, { schema });
 ```
 
-### `services/blog/package.json` 수정
+#### `services/blog/drizzle.config.ts`
 
-`prisma` 섹션과 `postinstall` 스크립트를 추가합니다:
+```typescript
+import { defineConfig } from 'drizzle-kit';
 
-```json
-{
-  "prisma": {
-    "seed": "tsx prisma/seed.ts"
-  },
-  "scripts": {
-    "postinstall": "prisma generate"
-  }
-}
+export default defineConfig({
+  schema: './drizzle/schema.ts',
+  out: './drizzle/migrations',
+  dialect: 'postgresql',
+  dbCredentials: { url: process.env.DATABASE_URL! },
+});
 ```
 
 ### 검증 명령어
 
 ```bash
-yarn prisma generate
-# 통과 기준: Prisma Client 생성 성공
-
-yarn prisma db push
+yarn workspace @blog/service db:push
 # 통과 기준: 스키마가 DB에 반영됨 (DATABASE_URL 필요)
 
-yarn prisma db seed
+yarn workspace @blog/service db:seed
 # 통과 기준: 시드 데이터 삽입 완료
 ```
 
@@ -664,7 +647,7 @@ GitHub OAuth 인증 + proxy.ts 인증 가드
 
 ```
 next-auth@beta (dependencies) - Auth.js v5
-@auth/prisma-adapter (dependencies)
+@auth/drizzle-adapter (dependencies)
 ```
 
 ### 생성할 파일
@@ -674,11 +657,11 @@ next-auth@beta (dependencies) - Auth.js v5
 ```typescript
 import NextAuth from 'next-auth';
 import GitHub from 'next-auth/providers/github';
-import { PrismaAdapter } from '@auth/prisma-adapter';
-import { prisma } from './prisma';
+import { DrizzleAdapter } from '@auth/drizzle-adapter';
+import { db } from './db';
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
-  adapter: PrismaAdapter(prisma),
+  adapter: DrizzleAdapter(db),
   providers: [
     GitHub({
       clientId: process.env.AUTH_GITHUB_ID,
@@ -689,7 +672,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     async session({ session, user }) {
       if (session.user) {
         session.user.id = user.id;
-        // @ts-expect-error -- role is added by Prisma adapter
+        // @ts-expect-error -- role is added by drizzle adapter
         session.user.role = user.role;
       }
       return session;
@@ -748,147 +731,11 @@ yarn build
 
 #### `services/blog/src/app/api/posts/route.ts`
 
-```typescript
-import { auth } from '@/lib/auth';
-import { prisma } from '@/lib/prisma';
-
-// 글 목록 조회 (공개)
-export async function GET(request: Request) {
-  const url = new URL(request.url);
-  const page = Number(url.searchParams.get('page') ?? '1');
-  const limit = Number(url.searchParams.get('limit') ?? '10');
-  const skip = (page - 1) * limit;
-
-  const [posts, total] = await Promise.all([
-    prisma.post.findMany({
-      where: { published: true },
-      orderBy: { publishedAt: 'desc' },
-      skip,
-      take: limit,
-      include: { author: { select: { name: true, image: true } } },
-    }),
-    prisma.post.count({ where: { published: true } }),
-  ]);
-
-  return Response.json({ posts, total, page, limit });
-}
-
-// 글 생성 (인증 필요)
-export async function POST(request: Request) {
-  const session = await auth();
-  if (!session?.user?.id) {
-    return Response.json({ error: 'Unauthorized' }, { status: 401 });
-  }
-
-  const body = await request.json();
-  const { title, content, excerpt, coverImage, slug, published } = body;
-
-  if (!title || !content || !slug) {
-    return Response.json(
-      { error: 'title, content, slug are required' },
-      { status: 400 }
-    );
-  }
-
-  const post = await prisma.post.create({
-    data: {
-      title,
-      slug,
-      content,
-      excerpt,
-      coverImage,
-      published: published ?? false,
-      publishedAt: published ? new Date() : null,
-      authorId: session.user.id,
-    },
-  });
-
-  return Response.json(post, { status: 201 });
-}
-```
+Drizzle ORM을 사용한 CRUD API. 실제 구현은 소스 코드 참조.
 
 #### `services/blog/src/app/api/posts/[id]/route.ts`
 
-```typescript
-import { auth } from '@/lib/auth';
-import { prisma } from '@/lib/prisma';
-
-// 글 상세 조회
-export async function GET(
-  _request: Request,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  const { id } = await params;
-
-  const post = await prisma.post.findUnique({
-    where: { id },
-    include: { author: { select: { name: true, image: true } } },
-  });
-
-  if (!post) {
-    return Response.json({ error: 'Not found' }, { status: 404 });
-  }
-
-  return Response.json(post);
-}
-
-// 글 수정
-export async function PUT(
-  request: Request,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  const session = await auth();
-  if (!session?.user?.id) {
-    return Response.json({ error: 'Unauthorized' }, { status: 401 });
-  }
-
-  const { id } = await params;
-  const body = await request.json();
-
-  const existing = await prisma.post.findUnique({ where: { id } });
-  if (!existing) {
-    return Response.json({ error: 'Not found' }, { status: 404 });
-  }
-  if (existing.authorId !== session.user.id) {
-    return Response.json({ error: 'Forbidden' }, { status: 403 });
-  }
-
-  const post = await prisma.post.update({
-    where: { id },
-    data: {
-      ...body,
-      publishedAt: body.published && !existing.published ? new Date() : existing.publishedAt,
-    },
-  });
-
-  return Response.json(post);
-}
-
-// 글 삭제
-export async function DELETE(
-  _request: Request,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  const session = await auth();
-  if (!session?.user?.id) {
-    return Response.json({ error: 'Unauthorized' }, { status: 401 });
-  }
-
-  const { id } = await params;
-
-  const existing = await prisma.post.findUnique({ where: { id } });
-  if (!existing) {
-    return Response.json({ error: 'Not found' }, { status: 404 });
-  }
-  if (existing.authorId !== session.user.id) {
-    return Response.json({ error: 'Forbidden' }, { status: 403 });
-  }
-
-  await prisma.post.delete({ where: { id } });
-
-  return Response.json({ success: true });
-}
-```
+Drizzle ORM을 사용한 개별 글 GET/PUT/DELETE API. 실제 구현은 소스 코드 참조.
 
 ### 검증 명령어
 
@@ -1160,7 +1007,7 @@ export default defineConfig({
 #### `services/blog/Dockerfile`
 
 ```dockerfile
-FROM node:20-alpine AS base
+FROM node:22-alpine AS base
 
 # mise를 사용해 Yarn Berry 설치
 RUN apk add --no-cache curl bash \
@@ -1182,7 +1029,6 @@ FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app ./
 COPY . .
-RUN yarn workspace @blog/service prisma generate
 RUN yarn workspace @blog/service build
 
 FROM base AS runner
@@ -1262,8 +1108,6 @@ jobs:
       - uses: jdx/mise-action@v2
       - name: Install dependencies
         run: yarn install --immutable
-      - name: Generate Prisma Client
-        run: yarn workspace @blog/service prisma generate
       - name: Build
         run: yarn build
 
@@ -1283,8 +1127,6 @@ jobs:
       - uses: jdx/mise-action@v2
       - name: Install dependencies
         run: yarn install --immutable
-      - name: Generate Prisma Client
-        run: yarn workspace @blog/service prisma generate
       - name: Install Playwright browsers
         run: yarn playwright install --with-deps chromium
       - name: Build
