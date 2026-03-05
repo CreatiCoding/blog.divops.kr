@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { TiptapEditor } from '@/components/editor/tiptap-editor';
 
@@ -11,10 +11,31 @@ export default function WritePage() {
 
   const [title, setTitle] = useState('');
   const [slug, setSlug] = useState('');
+  const [category, setCategory] = useState('');
   const [excerpt, setExcerpt] = useState('');
   const [content, setContent] = useState('');
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(!!editId);
+  const [categories, setCategories] = useState<string[]>([]);
+  const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
+  const categoryRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    fetch('/api/categories')
+      .then((res) => res.json())
+      .then(setCategories)
+      .catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (categoryRef.current && !categoryRef.current.contains(e.target as Node)) {
+        setShowCategoryDropdown(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   useEffect(() => {
     if (!editId) return;
@@ -26,6 +47,7 @@ export default function WritePage() {
       .then((post) => {
         setTitle(post.title);
         setSlug(post.slug);
+        setCategory(post.category ?? '');
         setExcerpt(post.excerpt ?? '');
         setContent(post.content);
       })
@@ -57,7 +79,7 @@ export default function WritePage() {
     const res = await fetch(url, {
       method,
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ title, slug, content, excerpt, published }),
+      body: JSON.stringify({ title, slug, category: category || null, content, excerpt, published }),
     });
 
     if (res.ok) {
@@ -87,7 +109,7 @@ export default function WritePage() {
         {editId && (
           <button
             onClick={handleDelete}
-            className="px-4 py-2 text-red-600 border border-red-300 rounded-lg hover:bg-red-50"
+            className="px-4 py-2 text-red-600 border border-red-300 rounded-lg cursor-pointer hover:bg-red-50"
           >
             Delete
           </button>
@@ -114,6 +136,44 @@ export default function WritePage() {
           placeholder="post-slug"
         />
       </div>
+      <div ref={categoryRef} className="relative">
+        <label className="block text-sm font-medium mb-1">Category</label>
+        <input
+          type="text"
+          value={category}
+          onChange={(e) => {
+            setCategory(e.target.value);
+            setShowCategoryDropdown(true);
+          }}
+          onFocus={() => setShowCategoryDropdown(true)}
+          className="w-full border rounded-lg px-3 py-2"
+          placeholder="Select or type a category"
+        />
+        {showCategoryDropdown && (() => {
+          const filtered = categories.filter(
+            (c) => c.toLowerCase().includes(category.toLowerCase()) && c !== category
+          );
+          if (filtered.length === 0) return null;
+          return (
+            <ul className="absolute z-10 w-full mt-1 bg-white border rounded-lg shadow-lg max-h-48 overflow-y-auto">
+              {filtered.map((c) => (
+                <li key={c}>
+                  <button
+                    type="button"
+                    className="w-full text-left px-3 py-2 cursor-pointer hover:bg-blue-50 text-sm"
+                    onClick={() => {
+                      setCategory(c);
+                      setShowCategoryDropdown(false);
+                    }}
+                  >
+                    {c}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          );
+        })()}
+      </div>
       <div>
         <label className="block text-sm font-medium mb-1">Excerpt</label>
         <textarea
@@ -132,14 +192,14 @@ export default function WritePage() {
         <button
           onClick={() => handleSubmit(false)}
           disabled={saving}
-          className="px-4 py-2 border rounded-lg hover:bg-gray-50 disabled:opacity-50"
+          className="px-4 py-2 border rounded-lg cursor-pointer hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Save Draft
         </button>
         <button
           onClick={() => handleSubmit(true)}
           disabled={saving}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+          className="px-4 py-2 bg-blue-600 text-white rounded-lg cursor-pointer hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Publish
         </button>
