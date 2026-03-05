@@ -58,26 +58,21 @@ export default async function PostPage({
 }) {
   const { slug } = await params;
 
-  let post;
-  try {
-    [post] = await db
-      .select({
-        id: posts.id,
-        title: posts.title,
-        content: posts.content,
-        coverImage: posts.coverImage,
-        publishedAt: posts.publishedAt,
-        author: {
-          name: users.name,
-          image: users.image,
-        },
-      })
-      .from(posts)
-      .leftJoin(users, eq(posts.authorId, users.id))
-      .where(eq(posts.slug, slug));
-  } catch {
-    notFound();
-  }
+  const [post] = await db
+    .select({
+      id: posts.id,
+      title: posts.title,
+      content: posts.content,
+      coverImage: posts.coverImage,
+      publishedAt: posts.publishedAt,
+      author: {
+        name: users.name,
+        image: users.image,
+      },
+    })
+    .from(posts)
+    .leftJoin(users, eq(posts.authorId, users.id))
+    .where(eq(posts.slug, slug));
 
   if (!post) notFound();
 
