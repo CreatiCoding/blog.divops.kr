@@ -10,6 +10,7 @@ export default async function HomePage() {
     id: string;
     title: string;
     slug: string;
+    category: string | null;
     excerpt: string | null;
     coverImage: string | null;
     publishedAt: Date | null;
@@ -22,6 +23,7 @@ export default async function HomePage() {
         id: posts.id,
         title: posts.title,
         slug: posts.slug,
+        category: posts.category,
         excerpt: posts.excerpt,
         coverImage: posts.coverImage,
         publishedAt: posts.publishedAt,

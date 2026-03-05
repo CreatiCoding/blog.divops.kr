@@ -14,6 +14,7 @@ export async function GET(
       id: posts.id,
       title: posts.title,
       slug: posts.slug,
+      category: posts.category,
       content: posts.content,
       excerpt: posts.excerpt,
       coverImage: posts.coverImage,

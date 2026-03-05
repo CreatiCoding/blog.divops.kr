@@ -6,6 +6,7 @@ type Post = {
   id: string;
   title: string;
   slug: string;
+  category: string | null;
   excerpt: string | null;
   coverImage: string | null;
   publishedAt: string | null;
@@ -29,6 +30,11 @@ export function PostList({ posts }: { posts: Post[] }) {
               <p className="mt-2 text-gray-600 line-clamp-2">{post.excerpt}</p>
             )}
             <div className="mt-3 flex items-center gap-2 text-sm text-gray-500">
+              {post.category && (
+                <span className="px-2 py-0.5 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
+                  {post.category}
+                </span>
+              )}
               {post.author?.name && <span>{post.author.name}</span>}
               {post.publishedAt && (
                 <time dateTime={post.publishedAt}>

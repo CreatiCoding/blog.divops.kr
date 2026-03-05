@@ -80,6 +80,7 @@ export const posts = pgTable(
     slug: text('slug').notNull().unique(),
     content: text('content').notNull(),
     excerpt: text('excerpt'),
+    category: text('category'),
     coverImage: text('coverImage'),
     published: boolean('published').default(false).notNull(),
     publishedAt: timestamp('publishedAt', { mode: 'date' }),

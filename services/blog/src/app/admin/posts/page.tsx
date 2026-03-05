@@ -15,7 +15,7 @@ export default async function AdminPostsPage() {
         <h1 className="text-2xl font-bold">Posts</h1>
         <Link
           href="/admin/write"
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          className="px-4 py-2 bg-blue-600 text-white rounded-lg cursor-pointer hover:bg-blue-700"
         >
           New Post
         </Link>
@@ -25,6 +25,7 @@ export default async function AdminPostsPage() {
           <thead className="bg-gray-50">
             <tr>
               <th className="text-left px-4 py-3 text-sm font-medium">Title</th>
+              <th className="text-left px-4 py-3 text-sm font-medium">Category</th>
               <th className="text-left px-4 py-3 text-sm font-medium">Status</th>
               <th className="text-left px-4 py-3 text-sm font-medium">Date</th>
             </tr>
@@ -39,6 +40,9 @@ export default async function AdminPostsPage() {
                   >
                     {post.title}
                   </Link>
+                </td>
+                <td className="px-4 py-3 text-sm text-gray-600">
+                  {post.category ?? '-'}
                 </td>
                 <td className="px-4 py-3">
                   <span
@@ -58,7 +62,7 @@ export default async function AdminPostsPage() {
             ))}
             {allPosts.length === 0 && (
               <tr>
-                <td colSpan={3} className="px-4 py-8 text-center text-gray-500">
+                <td colSpan={4} className="px-4 py-8 text-center text-gray-500">
                   No posts yet
                 </td>
               </tr>

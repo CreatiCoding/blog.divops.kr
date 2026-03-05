@@ -15,6 +15,7 @@ export async function GET(request: Request) {
         id: posts.id,
         title: posts.title,
         slug: posts.slug,
+        category: posts.category,
         excerpt: posts.excerpt,
         coverImage: posts.coverImage,
         publishedAt: posts.publishedAt,
@@ -50,7 +51,7 @@ export async function POST(request: Request) {
   }
 
   const body = await request.json();
-  const { title, content, excerpt, coverImage, slug, published } = body;
+  const { title, content, excerpt, coverImage, slug, published, category } = body;
 
   if (!title || !content || !slug) {
     return Response.json(
@@ -65,6 +66,7 @@ export async function POST(request: Request) {
       title,
       slug,
       content,
+      category: category ?? null,
       excerpt,
       coverImage,
       published: published ?? false,

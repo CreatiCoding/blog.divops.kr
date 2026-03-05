@@ -12,6 +12,7 @@ vi.mock('next/image', () => ({
 
 const defaultProps = {
   title: '테스트 글 제목',
+  category: null as string | null,
   content: '<p>본문 내용입니다.</p>',
   coverImage: null,
   publishedAt: '2025-01-15T00:00:00.000Z',

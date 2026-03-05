@@ -47,6 +47,7 @@
 | POST-005 | total 카운트 | published 글 15개 | total=15 반환 |
 | POST-006 | 비공개 글 제외 | published=false 글 존재 | 목록에 미포함 |
 | POST-007 | 빈 결과 | published 글 0개 | posts=[], total=0 |
+| POST-008 | category 포함 | - | 각 글의 category 필드 반환 |
 
 ### 2.2 글 생성 (POST /api/posts)
 
@@ -61,6 +62,8 @@
 | POST-016 | 선택 필드 포함 | excerpt+coverImage 포함 | 201, 해당 필드 저장됨 |
 | POST-017 | published 미지정 | published 필드 없음 | published=false (기본값) |
 | POST-018 | authorId 자동 설정 | 인증된 사용자 | session.user.id가 authorId로 설정 |
+| POST-019 | category 포함 | category="Tech" | 201, category 저장됨 |
+| POST-019a | category 미지정 | category 필드 없음 | category=null (기본값) |
 
 ### 2.3 글 상세 조회 (GET /api/posts/:id)
 
@@ -69,6 +72,7 @@
 | POST-020 | 정상 조회 | 존재하는 ID | 200, 전체 필드 + author 정보 |
 | POST-021 | 존재하지 않는 ID | 잘못된 ID | 404 Not found |
 | POST-022 | author 정보 포함 | - | author.name, author.image 포함 |
+| POST-023 | category 포함 | - | category 필드 반환 |
 
 ### 2.4 글 수정 (PUT /api/posts/:id)
 
@@ -186,12 +190,16 @@
 | UI-007 | 작성자 없음 | author.name=null | 이름 영역 미렌더링 |
 | UI-008 | 날짜 표시 | publishedAt 존재 | ko-KR 형식 날짜 표시 |
 | UI-009 | 날짜 없음 | publishedAt=null | 날짜 영역 미렌더링 |
+| UI-009a | 카테고리 배지 | category 존재 | 파란 배지로 카테고리 표시 |
+| UI-009b | 카테고리 없음 | category=null | 배지 미렌더링 |
 
 ### 6.2 PostDetail
 
 | ID | 케이스 | 입력/조건 | 기대 결과 |
 |----|--------|----------|----------|
 | UI-010 | 제목 렌더링 | title="Test" | h1에 "Test" 표시 |
+| UI-010a | 카테고리 배지 | category 존재 | 제목 위에 파란 배지로 카테고리 표시 |
+| UI-010b | 카테고리 없음 | category=null | 배지 미렌더링 |
 | UI-011 | 본문 렌더링 | content HTML | dangerouslySetInnerHTML로 렌더링 |
 | UI-012 | 커버 이미지 | coverImage 존재 | Image 컴포넌트 렌더링 |
 | UI-013 | 커버 이미지 없음 | coverImage=null | 이미지 미렌더링 |
@@ -203,7 +211,7 @@
 
 | ID | 케이스 | 입력/조건 | 기대 결과 |
 |----|--------|----------|----------|
-| UI-020 | 폼 렌더링 | - | title, slug, excerpt, content 필드 표시 |
+| UI-020 | 폼 렌더링 | - | title, slug, category, excerpt, content 필드 표시 |
 | UI-021 | slug 자동 생성 | title 입력 후 blur | title을 slug 형식으로 변환 |
 | UI-022 | slug 변환 규칙 | "Hello World!" | "hello-world" |
 | UI-023 | 한글 slug | "안녕 세계" | "안녕-세계" |
@@ -218,7 +226,7 @@
 
 | ID | 케이스 | 입력/조건 | 기대 결과 |
 |----|--------|----------|----------|
-| UI-030 | 테이블 렌더링 | 글 존재 | Title, Status, Date 컬럼 표시 |
+| UI-030 | 테이블 렌더링 | 글 존재 | Title, Category, Status, Date 컬럼 표시 |
 | UI-031 | Published 배지 | published=true | 초록 배지 "Published" |
 | UI-032 | Draft 배지 | published=false | 노랑 배지 "Draft" |
 | UI-033 | 빈 상태 | 글 없음 | "No posts yet" 표시 |
@@ -267,6 +275,7 @@
 | id | text | PK | createId() |
 | title | text | NOT NULL | - |
 | slug | text | UNIQUE, NOT NULL | - |
+| category | text | nullable | - |
 | content | text | NOT NULL | - |
 | excerpt | text | nullable | - |
 | coverImage | text | nullable | - |

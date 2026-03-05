@@ -18,6 +18,7 @@ const createPost = (
   id: '1',
   title: '테스트 글 제목',
   slug: 'test-post',
+  category: null as string | null,
   excerpt: '테스트 요약입니다.',
   coverImage: null,
   publishedAt: '2025-01-15T00:00:00.000Z',

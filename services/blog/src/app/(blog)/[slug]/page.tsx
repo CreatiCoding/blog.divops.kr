@@ -64,6 +64,7 @@ export default async function PostPage({
     .select({
       id: posts.id,
       title: posts.title,
+      category: posts.category,
       content: posts.content,
       coverImage: posts.coverImage,
       publishedAt: posts.publishedAt,
@@ -82,6 +83,7 @@ export default async function PostPage({
     <main className="max-w-4xl mx-auto px-4 py-8">
       <PostDetail
         title={post.title}
+        category={post.category}
         content={post.content}
         coverImage={post.coverImage}
         publishedAt={post.publishedAt?.toISOString() ?? null}
