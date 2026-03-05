@@ -168,7 +168,7 @@ export function MarkdownEditor({ content, onChange }: MarkdownEditorProps) {
           onDrop={handleDrop}
           onDragOver={(e) => e.preventDefault()}
           onPaste={handlePaste}
-          className="w-full p-4 min-h-[500px] font-mono text-sm resize-y outline-none"
+          className="w-full p-4 min-h-[500px] font-mono text-[15px] leading-relaxed text-gray-900 resize-y outline-none"
           placeholder="Write your markdown here... (drag & drop or paste images)"
           spellCheck={false}
         />

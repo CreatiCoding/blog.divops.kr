@@ -26,7 +26,7 @@ body {
 
 /* Custom prose styles for article content */
 .prose {
-  --tw-prose-body: #374151;
+  --tw-prose-body: #1f2937;
   --tw-prose-headings: #111827;
   --tw-prose-links: #111827;
   --tw-prose-bold: #111827;
@@ -198,6 +198,9 @@ body {
 .ProseMirror {
   outline: none;
   min-height: 250px;
+  color: #1f2937;
+  font-size: 15px;
+  line-height: 1.75;
 }
 .ProseMirror p.is-editor-empty:first-child::before {
   content: 'Write something...';
