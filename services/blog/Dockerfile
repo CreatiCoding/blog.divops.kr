@@ -15,7 +15,8 @@ WORKDIR /app
 COPY . .
 COPY --from=deps /app/.pnp.cjs /app/.pnp.loader.mjs ./
 COPY --from=deps /app/.yarn ./.yarn
-RUN yarn workspace @blog/service build
+RUN --mount=type=cache,target=/app/services/blog/.next/cache \
+    yarn workspace @blog/service build
 # production 의존성만 남기기 (dev 캐시 제거)
 RUN yarn workspaces focus @blog/service --production
 
