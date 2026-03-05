@@ -1,28 +1,30 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useSyncExternalStore, useCallback } from 'react';
+
+const subscribe = (callback: () => void) => {
+  window.addEventListener('storage', callback);
+  return () => window.removeEventListener('storage', callback);
+};
+
+const getSnapshot = () =>
+  document.documentElement.classList.contains('dark');
+
+const getServerSnapshot = () => false;
 
 export function ThemeToggle() {
-  const [dark, setDark] = useState(false);
-  const [mounted, setMounted] = useState(false);
+  const dark = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 
-  useEffect(() => {
-    setMounted(true);
-    setDark(document.documentElement.classList.contains('dark'));
-  }, []);
-
-  const toggle = () => {
-    const next = !dark;
-    setDark(next);
+  const toggle = useCallback(() => {
+    const next = !document.documentElement.classList.contains('dark');
     document.documentElement.classList.toggle('dark', next);
     localStorage.setItem('theme', next ? 'dark' : 'light');
-  };
-
-  if (!mounted) return <div className="w-8 h-8" />;
+  }, []);
 
   return (
     <button
       onClick={toggle}
+      suppressHydrationWarning
       className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
       aria-label={dark ? '라이트 모드로 전환' : '다크 모드로 전환'}
     >
