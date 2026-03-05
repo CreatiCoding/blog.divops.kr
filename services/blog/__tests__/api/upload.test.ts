@@ -55,6 +55,7 @@ describe('POST /api/upload', () => {
     vi.clearAllMocks();
     vi.resetModules();
     process.env.S3_ENDPOINT = 'https://s3.test.dev';
+    process.env.UPLOAD_MAX_FILE_SIZE_MB = '10';
     mockedAuth.mockResolvedValue({ user: { id: '1', name: 'Test' } } as any);
     mockSend.mockResolvedValue({});
   });
@@ -132,19 +133,19 @@ describe('POST /api/upload', () => {
     expect(body.error).toBe('File type not allowed. Use JPEG, PNG, GIF, or WebP.');
   });
 
-  it('UPLOAD-009: 6MB 파일은 400을 반환한다', async () => {
-    const sixMB = 6 * 1024 * 1024;
-    const file = createFile('large.jpg', 'image/jpeg', sixMB);
+  it('UPLOAD-009: 11MB 파일은 400을 반환한다', async () => {
+    const elevenMB = 11 * 1024 * 1024;
+    const file = createFile('large.jpg', 'image/jpeg', elevenMB);
     const response = await callPOST(file);
     const body = await response.json();
 
     expect(response.status).toBe(400);
-    expect(body.error).toBe('File too large. Maximum 5MB.');
+    expect(body.error).toMatch(/File too large.*Maximum 10MB/);
   });
 
-  it('UPLOAD-010: 정확히 5MB 파일은 성공한다', async () => {
-    const fiveMB = 5 * 1024 * 1024;
-    const file = createFile('exact.png', 'image/png', fiveMB);
+  it('UPLOAD-010: 정확히 10MB 파일은 성공한다', async () => {
+    const tenMB = 10 * 1024 * 1024;
+    const file = createFile('exact.png', 'image/png', tenMB);
     const response = await callPOST(file);
     const body = await response.json();
 

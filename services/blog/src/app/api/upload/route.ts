@@ -2,7 +2,7 @@ import { PutObjectCommand } from '@aws-sdk/client-s3';
 import { auth } from '@/lib/auth';
 import { s3Client, S3_BUCKET } from '@/lib/s3';
 
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+const MAX_FILE_SIZE = Number(process.env.UPLOAD_MAX_FILE_SIZE_MB ?? 10) * 1024 * 1024;
 const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
 
 export async function POST(request: Request) {
@@ -26,8 +26,10 @@ export async function POST(request: Request) {
   }
 
   if (file.size > MAX_FILE_SIZE) {
+    const sizeMB = (file.size / 1024 / 1024).toFixed(1);
+    const limitMB = (MAX_FILE_SIZE / 1024 / 1024).toFixed(0);
     return Response.json(
-      { error: 'File too large. Maximum 5MB.' },
+      { error: `File too large (${sizeMB}MB). Maximum ${limitMB}MB.` },
       { status: 400 }
     );
   }
