@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 test('homepage should load', async ({ page }) => {
   await page.goto('/');
-  await expect(page.locator('h1')).toContainText('blog.divops.kr');
+  await expect(page.locator('h1')).toContainText('Blog');
 });
 
 test('should show robots.txt', async ({ page }) => {
