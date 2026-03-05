@@ -5,8 +5,7 @@ import { PostDetail } from '../../src/components/post/post-detail';
 afterEach(cleanup);
 
 vi.mock('next/image', () => ({
-  default: (props: any) => {
-    const { priority, ...rest } = props;
+  default: ({ priority: _priority, ...rest }: any) => {
     return <img {...rest} />;
   },
 }));

@@ -13,7 +13,7 @@ export default async function HomePage() {
     excerpt: string | null;
     coverImage: string | null;
     publishedAt: Date | null;
-    author: { name: string | null; image: string | null };
+    author: { name: string | null; image: string | null } | null;
   }[] = [];
 
   try {

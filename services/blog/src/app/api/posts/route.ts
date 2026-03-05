@@ -1,4 +1,4 @@
-import { eq, desc, and, count } from 'drizzle-orm';
+import { eq, desc, count } from 'drizzle-orm';
 import { auth } from '@/lib/auth';
 import { db } from '@/lib/db';
 import { posts, users } from '@db/schema';

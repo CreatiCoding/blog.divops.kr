@@ -41,6 +41,8 @@ vi.mock('drizzle-orm', () => ({
 import { auth } from '@/lib/auth';
 import { db } from '@/lib/db';
 
+const mockedAuth = vi.mocked(auth) as any;
+
 // ─── Helpers ───
 
 const BASE_URL = 'http://localhost:3000';
@@ -110,7 +112,7 @@ describe('Posts API', () => {
         'where',
       ]);
 
-      const dbMock = db as Record<string, unknown>;
+      const dbMock = db as unknown as Record<string, unknown>;
       dbMock.select = vi.fn().mockImplementation(() => {
         callIndex++;
         if (callIndex === 1) return listChain;
@@ -214,12 +216,12 @@ describe('Posts API', () => {
   describe('POST /api/posts', () => {
     function setupInsertMock(returnValue: unknown[]) {
       const chain = createChain(returnValue, ['values', 'returning']);
-      const dbMock = db as Record<string, unknown>;
+      const dbMock = db as unknown as Record<string, unknown>;
       dbMock.insert = vi.fn().mockReturnValue(chain);
     }
 
     it('POST-010: 초안 정상 생성 (published=false)', async () => {
-      vi.mocked(auth).mockResolvedValue(mockSession);
+      mockedAuth.mockResolvedValue(mockSession);
       const createdPost = {
         id: 'post-new',
         title: 'Draft Post',
@@ -251,7 +253,7 @@ describe('Posts API', () => {
     });
 
     it('POST-011: 발행 정상 생성 (published=true, publishedAt 설정)', async () => {
-      vi.mocked(auth).mockResolvedValue(mockSession);
+      mockedAuth.mockResolvedValue(mockSession);
       const createdPost = {
         id: 'post-new',
         title: 'Published Post',
@@ -283,7 +285,7 @@ describe('Posts API', () => {
     });
 
     it('POST-012: 미인증 -> 401', async () => {
-      vi.mocked(auth).mockResolvedValue(null);
+      mockedAuth.mockResolvedValue(null);
 
       const { POST } = await import('@/app/api/posts/route');
       const response = await POST(
@@ -303,7 +305,7 @@ describe('Posts API', () => {
     });
 
     it('POST-013: title 누락 -> 400', async () => {
-      vi.mocked(auth).mockResolvedValue(mockSession);
+      mockedAuth.mockResolvedValue(mockSession);
 
       const { POST } = await import('@/app/api/posts/route');
       const response = await POST(
@@ -320,7 +322,7 @@ describe('Posts API', () => {
     });
 
     it('POST-014: content 누락 -> 400', async () => {
-      vi.mocked(auth).mockResolvedValue(mockSession);
+      mockedAuth.mockResolvedValue(mockSession);
 
       const { POST } = await import('@/app/api/posts/route');
       const response = await POST(
@@ -337,7 +339,7 @@ describe('Posts API', () => {
     });
 
     it('POST-015: slug 누락 -> 400', async () => {
-      vi.mocked(auth).mockResolvedValue(mockSession);
+      mockedAuth.mockResolvedValue(mockSession);
 
       const { POST } = await import('@/app/api/posts/route');
       const response = await POST(
@@ -354,7 +356,7 @@ describe('Posts API', () => {
     });
 
     it('POST-017: published 미지정 -> false 기본값', async () => {
-      vi.mocked(auth).mockResolvedValue(mockSession);
+      mockedAuth.mockResolvedValue(mockSession);
       const createdPost = {
         id: 'post-new',
         title: 'No Published Flag',
@@ -396,7 +398,7 @@ describe('Posts API', () => {
         'leftJoin',
         'where',
       ]);
-      const dbMock = db as Record<string, unknown>;
+      const dbMock = db as unknown as Record<string, unknown>;
       dbMock.select = vi.fn().mockReturnValue(chain);
     }
 
@@ -454,13 +456,11 @@ describe('Posts API', () => {
       existing: unknown[] | null,
       updated: unknown[] = []
     ) {
-      const dbMock = db as Record<string, unknown>;
-      let selectCallIndex = 0;
+      const dbMock = db as unknown as Record<string, unknown>;
 
       // select는 기존 글 조회용 (from().where() 체이닝)
       const existingChain = createChain(existing ?? [], ['from', 'where']);
       dbMock.select = vi.fn().mockImplementation(() => {
-        selectCallIndex++;
         return existingChain;
       });
 
@@ -470,7 +470,7 @@ describe('Posts API', () => {
     }
 
     it('POST-030: 정상 수정', async () => {
-      vi.mocked(auth).mockResolvedValue(mockSession);
+      mockedAuth.mockResolvedValue(mockSession);
       const existing = {
         id: 'post-1',
         title: 'Old Title',
@@ -503,7 +503,7 @@ describe('Posts API', () => {
     });
 
     it('POST-031: 미인증 -> 401', async () => {
-      vi.mocked(auth).mockResolvedValue(null);
+      mockedAuth.mockResolvedValue(null);
 
       const { PUT } = await import('@/app/api/posts/[id]/route');
       const response = await PUT(
@@ -518,7 +518,7 @@ describe('Posts API', () => {
     });
 
     it('POST-032: 존재하지 않는 글 -> 404', async () => {
-      vi.mocked(auth).mockResolvedValue(mockSession);
+      mockedAuth.mockResolvedValue(mockSession);
       setupPutMocks([]);
 
       const { PUT } = await import('@/app/api/posts/[id]/route');
@@ -534,7 +534,7 @@ describe('Posts API', () => {
     });
 
     it('POST-033: 다른 사용자 글 -> 403', async () => {
-      vi.mocked(auth).mockResolvedValue(mockSession);
+      mockedAuth.mockResolvedValue(mockSession);
       const existing = {
         id: 'post-1',
         title: 'Other User Post',
@@ -559,7 +559,7 @@ describe('Posts API', () => {
     });
 
     it('POST-034: 초안 -> 발행 전환 (publishedAt 설정)', async () => {
-      vi.mocked(auth).mockResolvedValue(mockSession);
+      mockedAuth.mockResolvedValue(mockSession);
       const existing = {
         id: 'post-1',
         title: 'Draft',
@@ -593,7 +593,7 @@ describe('Posts API', () => {
     });
 
     it('POST-035: 이미 발행된 글 수정 (publishedAt 유지)', async () => {
-      vi.mocked(auth).mockResolvedValue(mockSession);
+      mockedAuth.mockResolvedValue(mockSession);
       const originalPublishedAt = new Date('2025-01-01');
       const existing = {
         id: 'post-1',
@@ -636,7 +636,7 @@ describe('Posts API', () => {
 
   describe('DELETE /api/posts/:id', () => {
     function setupDeleteMocks(existing: unknown[] | null) {
-      const dbMock = db as Record<string, unknown>;
+      const dbMock = db as unknown as Record<string, unknown>;
 
       // select 체이닝 (기존 글 조회)
       const selectChain = createChain(existing ?? [], ['from', 'where']);
@@ -648,7 +648,7 @@ describe('Posts API', () => {
     }
 
     it('POST-040: 정상 삭제', async () => {
-      vi.mocked(auth).mockResolvedValue(mockSession);
+      mockedAuth.mockResolvedValue(mockSession);
       setupDeleteMocks([
         { id: 'post-1', authorId: 'user-1', title: 'To Delete' },
       ]);
@@ -665,7 +665,7 @@ describe('Posts API', () => {
     });
 
     it('POST-041: 미인증 -> 401', async () => {
-      vi.mocked(auth).mockResolvedValue(null);
+      mockedAuth.mockResolvedValue(null);
 
       const { DELETE } = await import('@/app/api/posts/[id]/route');
       const response = await DELETE(
@@ -677,7 +677,7 @@ describe('Posts API', () => {
     });
 
     it('POST-042: 존재하지 않는 글 -> 404', async () => {
-      vi.mocked(auth).mockResolvedValue(mockSession);
+      mockedAuth.mockResolvedValue(mockSession);
       setupDeleteMocks([]);
 
       const { DELETE } = await import('@/app/api/posts/[id]/route');
@@ -690,7 +690,7 @@ describe('Posts API', () => {
     });
 
     it('POST-043: 다른 사용자 글 -> 403', async () => {
-      vi.mocked(auth).mockResolvedValue(mockSession);
+      mockedAuth.mockResolvedValue(mockSession);
       setupDeleteMocks([
         { id: 'post-1', authorId: 'user-other', title: 'Not Mine' },
       ]);

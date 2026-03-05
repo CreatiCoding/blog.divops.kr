@@ -1,13 +1,18 @@
-import { FlatCompat } from '@eslint/eslintrc';
+import nextConfig from 'eslint-config-next';
 
-const compat = new FlatCompat();
-
-export default [
-  ...compat.extends('next/core-web-vitals', 'next/typescript'),
+const config = [
+  ...nextConfig,
   {
     rules: {
-      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
       'prefer-const': 'error',
     },
   },
+  {
+    files: ['**/*.ts', '**/*.tsx'],
+    rules: {
+      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+    },
+  },
 ];
+
+export default config;

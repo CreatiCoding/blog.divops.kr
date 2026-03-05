@@ -19,7 +19,7 @@ vi.mock('@/lib/s3', () => ({
 import { auth } from '@/lib/auth';
 import { PutObjectCommand } from '@aws-sdk/client-s3';
 
-const mockedAuth = vi.mocked(auth);
+const mockedAuth = vi.mocked(auth) as any;
 const MockedPutObjectCommand = vi.mocked(PutObjectCommand);
 
 function createFile(name: string, type: string, sizeInBytes: number) {
