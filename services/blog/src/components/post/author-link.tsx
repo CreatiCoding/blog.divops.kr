@@ -7,9 +7,21 @@ type AuthorLinkProps = {
 };
 
 export function AuthorLink({ name, className, stopPropagation }: AuthorLinkProps) {
-  const handleClick = stopPropagation
-    ? (e: MouseEvent) => e.stopPropagation()
-    : undefined;
+  if (stopPropagation) {
+    return (
+      <button
+        type="button"
+        className={className}
+        onClick={(e: MouseEvent) => {
+          e.stopPropagation();
+          e.preventDefault();
+          window.open(`https://github.com/${name}`, '_blank', 'noopener,noreferrer');
+        }}
+      >
+        {name}
+      </button>
+    );
+  }
 
   return (
     <a
@@ -17,7 +29,6 @@ export function AuthorLink({ name, className, stopPropagation }: AuthorLinkProps
       target="_blank"
       rel="noopener noreferrer"
       className={className}
-      onClick={handleClick}
     >
       {name}
     </a>
