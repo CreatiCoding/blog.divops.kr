@@ -57,7 +57,14 @@ export function PostDetail({
                 className="rounded-full"
               />
             )}
-            <span className="text-[13px] text-gray-400 dark:text-gray-500">{author.name}</span>
+            <a
+              href={`https://github.com/${author.name}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[13px] text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+            >
+              {author.name}
+            </a>
           </div>
         )}
       </header>
