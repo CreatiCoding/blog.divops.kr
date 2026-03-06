@@ -84,6 +84,7 @@ export const posts = pgTable(
     coverImage: text('coverImage'),
     published: boolean('published').default(false).notNull(),
     publishedAt: timestamp('publishedAt', { mode: 'date' }),
+    viewCount: integer('viewCount').default(0).notNull(),
     authorId: text('authorId')
       .notNull()
       .references(() => users.id),

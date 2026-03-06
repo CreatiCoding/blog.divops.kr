@@ -22,6 +22,7 @@ const createPost = (
   excerpt: '테스트 요약입니다.',
   coverImage: null,
   publishedAt: '2025-01-15T00:00:00.000Z',
+  viewCount: 0,
   author: { name: '홍길동', image: null },
   ...overrides,
 });

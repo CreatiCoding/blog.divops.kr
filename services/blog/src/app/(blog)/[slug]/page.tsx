@@ -4,6 +4,7 @@ import { eq } from 'drizzle-orm';
 import { db } from '@/lib/db';
 import { posts, users } from '@db/schema';
 import { PostDetail } from '@/components/post/post-detail';
+import { ViewCounter } from '@/components/post/view-counter';
 
 export const revalidate = 60;
 export const dynamicParams = true;
@@ -68,6 +69,7 @@ export default async function PostPage({
       content: posts.content,
       coverImage: posts.coverImage,
       publishedAt: posts.publishedAt,
+      viewCount: posts.viewCount,
       author: {
         name: users.name,
         image: users.image,
@@ -88,6 +90,9 @@ export default async function PostPage({
         coverImage={post.coverImage}
         publishedAt={post.publishedAt?.toISOString() ?? null}
         author={post.author}
+        viewCounter={
+          <ViewCounter postId={post.id} initialCount={post.viewCount} />
+        }
       />
     </section>
   );
