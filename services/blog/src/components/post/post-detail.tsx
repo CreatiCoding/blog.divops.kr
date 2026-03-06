@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import { AuthorLink } from './author-link';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
@@ -57,14 +58,10 @@ export function PostDetail({
                 className="rounded-full"
               />
             )}
-            <a
-              href={`https://github.com/${author.name}`}
-              target="_blank"
-              rel="noopener noreferrer"
+            <AuthorLink
+              name={author.name}
               className="text-[13px] text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
-            >
-              {author.name}
-            </a>
+            />
           </div>
         )}
       </header>
