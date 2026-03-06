@@ -1,9 +1,11 @@
 import { db } from '@/lib/db';
 import { posts, users } from '@db/schema';
-import { eq, desc } from 'drizzle-orm';
+import { eq, desc, count } from 'drizzle-orm';
 import { PostList } from '@/components/post/post-list';
 
 export const dynamic = 'force-dynamic';
+
+const PAGE_SIZE = 10;
 
 export default async function HomePage() {
   let postList: {
@@ -16,27 +18,36 @@ export default async function HomePage() {
     publishedAt: Date | null;
     author: { name: string | null; image: string | null } | null;
   }[] = [];
+  let total = 0;
 
   try {
-    postList = await db
-      .select({
-        id: posts.id,
-        title: posts.title,
-        slug: posts.slug,
-        category: posts.category,
-        excerpt: posts.excerpt,
-        coverImage: posts.coverImage,
-        publishedAt: posts.publishedAt,
-        author: {
-          name: users.name,
-          image: users.image,
-        },
-      })
-      .from(posts)
-      .leftJoin(users, eq(posts.authorId, users.id))
-      .where(eq(posts.published, true))
-      .orderBy(desc(posts.publishedAt))
-      .limit(20);
+    const [rows, [totalResult]] = await Promise.all([
+      db
+        .select({
+          id: posts.id,
+          title: posts.title,
+          slug: posts.slug,
+          category: posts.category,
+          excerpt: posts.excerpt,
+          coverImage: posts.coverImage,
+          publishedAt: posts.publishedAt,
+          author: {
+            name: users.name,
+            image: users.image,
+          },
+        })
+        .from(posts)
+        .leftJoin(users, eq(posts.authorId, users.id))
+        .where(eq(posts.published, true))
+        .orderBy(desc(posts.publishedAt))
+        .limit(PAGE_SIZE),
+      db
+        .select({ value: count() })
+        .from(posts)
+        .where(eq(posts.published, true)),
+    ]);
+    postList = rows;
+    total = totalResult?.value ?? 0;
   } catch {
     // DB 연결 실패 시 빈 목록으로 fallback
   }
@@ -56,7 +67,7 @@ export default async function HomePage() {
           DevOps와 프론트엔드 개발에 대한 이야기
         </p>
       </div>
-      <PostList posts={serialized} />
+      <PostList initialPosts={serialized} total={total} pageSize={PAGE_SIZE} />
     </section>
   );
 }
