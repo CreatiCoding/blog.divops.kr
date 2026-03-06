@@ -1,5 +1,6 @@
 'use client';
 
+import type { ReactNode } from 'react';
 import Image from 'next/image';
 import { AuthorLink } from './author-link';
 import ReactMarkdown from 'react-markdown';
@@ -7,6 +8,7 @@ import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
 import rehypeHighlight from 'rehype-highlight';
 import 'highlight.js/styles/github-dark.css';
+import { generateSlug } from '@/lib/heading-utils';
 
 type PostDetailProps = {
   title: string;
@@ -16,6 +18,17 @@ type PostDetailProps = {
   publishedAt: string | null;
   author: { name: string | null; image: string | null } | null;
 };
+
+function getTextContent(node: ReactNode): string {
+  if (typeof node === 'string') return node;
+  if (typeof node === 'number') return String(node);
+  if (!node) return '';
+  if (Array.isArray(node)) return node.map(getTextContent).join('');
+  if (typeof node === 'object' && 'props' in node) {
+    return getTextContent((node as { props: { children?: ReactNode } }).props.children);
+  }
+  return '';
+}
 
 export function PostDetail({
   title,
@@ -80,6 +93,18 @@ export function PostDetail({
           remarkPlugins={[remarkGfm]}
           rehypePlugins={[rehypeRaw, rehypeHighlight]}
           components={{
+            h1: ({ children, ...props }) => {
+              const id = generateSlug(getTextContent(children));
+              return <h1 id={id} {...props}>{children}</h1>;
+            },
+            h2: ({ children, ...props }) => {
+              const id = generateSlug(getTextContent(children));
+              return <h2 id={id} {...props}>{children}</h2>;
+            },
+            h3: ({ children, ...props }) => {
+              const id = generateSlug(getTextContent(children));
+              return <h3 id={id} {...props}>{children}</h3>;
+            },
             img: ({ src, alt, ...props }) => (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={src} alt={alt ?? ''} loading="lazy" {...props} />
