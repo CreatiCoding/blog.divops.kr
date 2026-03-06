@@ -52,7 +52,12 @@ export async function PUT(
   const body = await request.json();
 
   const [existing] = await db
-    .select()
+    .select({
+      id: posts.id,
+      authorId: posts.authorId,
+      published: posts.published,
+      publishedAt: posts.publishedAt,
+    })
     .from(posts)
     .where(eq(posts.id, id));
 
@@ -91,7 +96,10 @@ export async function DELETE(
   const { id } = await params;
 
   const [existing] = await db
-    .select()
+    .select({
+      id: posts.id,
+      authorId: posts.authorId,
+    })
     .from(posts)
     .where(eq(posts.id, id));
 
