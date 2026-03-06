@@ -1,8 +1,11 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { AuthorLink } from './author-link';
+
+const DEFAULT_THUMBNAIL = 'https://picsum.photos/400/200';
 
 type Post = {
   id: string;
@@ -75,48 +78,60 @@ export function PostList({
     <div className="flex flex-col">
       {posts.map((post) => (
         <Link key={post.id} href={`/${post.slug}`} className="group block">
-          <article className="py-8 border-b border-gray-100 dark:border-gray-800 last:border-0">
-            <div className="flex items-center gap-2 mb-2.5">
-              {post.category && (
-                <span className="text-[12px] font-semibold uppercase tracking-wider text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded">
-                  {post.category}
-                </span>
+          <article className="py-6 border-b border-gray-100 dark:border-gray-800 last:border-0 flex flex-col sm:flex-row sm:gap-5">
+            <div className="relative w-full h-[180px] sm:w-[160px] sm:h-[100px] shrink-0 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-800 mb-3 sm:mb-0">
+              <Image
+                src={post.coverImage || DEFAULT_THUMBNAIL}
+                alt=""
+                fill
+                className="object-cover group-hover:scale-105 transition-transform duration-300"
+                sizes="(max-width: 640px) 100vw, 160px"
+                unoptimized={!post.coverImage}
+              />
+            </div>
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center gap-2 mb-2.5">
+                {post.category && (
+                  <span className="text-[12px] font-semibold uppercase tracking-wider text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded">
+                    {post.category}
+                  </span>
+                )}
+                {post.publishedAt && (
+                  <time
+                    dateTime={post.publishedAt}
+                    className="text-[13px] text-gray-300 dark:text-gray-600"
+                  >
+                    {new Date(post.publishedAt).toLocaleDateString('ko-KR', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric',
+                    })}
+                  </time>
+                )}
+                {post.viewCount != null && post.viewCount > 0 && (
+                  <span className="text-[13px] text-gray-300 dark:text-gray-600">
+                    조회 {post.viewCount.toLocaleString()}
+                  </span>
+                )}
+              </div>
+              <h2 className="text-[18px] font-semibold text-gray-900 dark:text-gray-100 leading-snug tracking-tight group-hover:text-gray-500 dark:group-hover:text-gray-400 transition-colors duration-200">
+                {post.title}
+              </h2>
+              {post.excerpt && (
+                <p className="mt-2 text-[14px] text-gray-400 dark:text-gray-500 leading-relaxed line-clamp-2">
+                  {post.excerpt}
+                </p>
               )}
-              {post.publishedAt && (
-                <time
-                  dateTime={post.publishedAt}
-                  className="text-[13px] text-gray-300 dark:text-gray-600"
-                >
-                  {new Date(post.publishedAt).toLocaleDateString('ko-KR', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                  })}
-                </time>
-              )}
-              {post.viewCount != null && post.viewCount > 0 && (
-                <span className="text-[13px] text-gray-300 dark:text-gray-600">
-                  조회 {post.viewCount.toLocaleString()}
-                </span>
+              {post.author?.name && (
+                <p className="mt-3 text-[12px] text-gray-300 dark:text-gray-600">
+                  <AuthorLink
+                    name={post.author.name}
+                    className="hover:text-gray-500 dark:hover:text-gray-400 transition-colors"
+                    stopPropagation
+                  />
+                </p>
               )}
             </div>
-            <h2 className="text-[18px] font-semibold text-gray-900 dark:text-gray-100 leading-snug tracking-tight group-hover:text-gray-500 dark:group-hover:text-gray-400 transition-colors duration-200">
-              {post.title}
-            </h2>
-            {post.excerpt && (
-              <p className="mt-2 text-[14px] text-gray-400 dark:text-gray-500 leading-relaxed line-clamp-2">
-                {post.excerpt}
-              </p>
-            )}
-            {post.author?.name && (
-              <p className="mt-3 text-[12px] text-gray-300 dark:text-gray-600">
-                <AuthorLink
-                  name={post.author.name}
-                  className="hover:text-gray-500 dark:hover:text-gray-400 transition-colors"
-                  stopPropagation
-                />
-              </p>
-            )}
           </article>
         </Link>
       ))}

@@ -1,6 +1,7 @@
 import { eq } from 'drizzle-orm';
 import { auth } from '@/lib/auth';
 import { db } from '@/lib/db';
+import { extractFirstImageUrl } from '@/lib/extract-thumbnail';
 import { posts, users } from '@db/schema';
 
 export async function GET(
@@ -66,6 +67,10 @@ export async function PUT(
   }
   if (existing.authorId !== session.user.id) {
     return Response.json({ error: 'Forbidden' }, { status: 403 });
+  }
+
+  if (body.content && !body.coverImage) {
+    body.coverImage = extractFirstImageUrl(body.content) || null;
   }
 
   const [post] = await db

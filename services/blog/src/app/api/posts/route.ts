@@ -1,6 +1,7 @@
 import { eq, desc, count } from 'drizzle-orm';
 import { auth } from '@/lib/auth';
 import { db } from '@/lib/db';
+import { extractFirstImageUrl } from '@/lib/extract-thumbnail';
 import { posts, users } from '@db/schema';
 
 export async function GET(request: Request) {
@@ -68,7 +69,7 @@ export async function POST(request: Request) {
       content,
       category: category ?? null,
       excerpt,
-      coverImage,
+      coverImage: coverImage || extractFirstImageUrl(content) || null,
       published: published ?? false,
       publishedAt: published ? new Date() : null,
       authorId: session.user.id,

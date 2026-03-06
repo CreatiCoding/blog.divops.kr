@@ -21,6 +21,18 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: '*.githubusercontent.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'picsum.photos',
+      },
+      {
+        protocol: 'https',
+        hostname: 'divopsor.github.io',
+      },
+      {
+        protocol: 'https',
+        hostname: '*.notion.site',
+      },
     ],
   },
 };
