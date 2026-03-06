@@ -5,7 +5,13 @@ import Link from 'next/link';
 
 export default async function AdminPostsPage() {
   const allPosts = await db
-    .select()
+    .select({
+      id: posts.id,
+      title: posts.title,
+      category: posts.category,
+      published: posts.published,
+      createdAt: posts.createdAt,
+    })
     .from(posts)
     .orderBy(desc(posts.createdAt));
 
