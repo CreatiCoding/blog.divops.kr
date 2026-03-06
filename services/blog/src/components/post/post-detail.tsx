@@ -17,6 +17,7 @@ type PostDetailProps = {
   coverImage: string | null;
   publishedAt: string | null;
   author: { name: string | null; image: string | null } | null;
+  viewCounter?: ReactNode;
 };
 
 function getTextContent(node: ReactNode): string {
@@ -37,6 +38,7 @@ export function PostDetail({
   coverImage,
   publishedAt,
   author,
+  viewCounter,
 }: PostDetailProps) {
   return (
     <article>
@@ -56,6 +58,7 @@ export function PostDetail({
               })}
             </time>
           )}
+          {viewCounter}
         </div>
         <h1 className="text-[32px] md:text-[38px] font-extrabold leading-[1.25] tracking-tight text-gray-900 dark:text-gray-100 break-keep">
           {title}

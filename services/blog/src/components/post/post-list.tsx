@@ -12,6 +12,7 @@ type Post = {
   excerpt: string | null;
   coverImage: string | null;
   publishedAt: string | null;
+  viewCount?: number;
   author: { name: string | null; image: string | null } | null;
 };
 
@@ -92,6 +93,11 @@ export function PostList({
                     day: 'numeric',
                   })}
                 </time>
+              )}
+              {post.viewCount != null && post.viewCount > 0 && (
+                <span className="text-[13px] text-gray-300 dark:text-gray-600">
+                  조회 {post.viewCount.toLocaleString()}
+                </span>
               )}
             </div>
             <h2 className="text-[18px] font-semibold text-gray-900 dark:text-gray-100 leading-snug tracking-tight group-hover:text-gray-500 dark:group-hover:text-gray-400 transition-colors duration-200">
