@@ -82,6 +82,9 @@ export default async function PostPage({
 
   return (
     <div className="max-w-[960px] mx-auto px-6 py-12 lg:flex lg:gap-10">
+      <aside className="hidden lg:block w-[200px] shrink-0">
+        <TableOfContents content={post.content} />
+      </aside>
       <section className="flex-1 min-w-0 max-w-[720px]">
         <PostDetail
           title={post.title}
@@ -92,9 +95,6 @@ export default async function PostPage({
           author={post.author}
         />
       </section>
-      <aside className="hidden lg:block w-[200px] shrink-0">
-        <TableOfContents content={post.content} />
-      </aside>
     </div>
   );
 }
