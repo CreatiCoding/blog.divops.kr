@@ -5,6 +5,7 @@ import { db } from '@/lib/db';
 import { posts, users } from '@db/schema';
 import { PostDetail } from '@/components/post/post-detail';
 import { ViewCounter } from '@/components/post/view-counter';
+import { TableOfContents } from '@/components/post/table-of-contents';
 
 export const revalidate = 60;
 export const dynamicParams = true;
@@ -81,16 +82,21 @@ export default async function PostPage({
   if (!post) notFound();
 
   return (
-    <section className="max-w-[720px] mx-auto px-6 py-12">
-      <PostDetail
-        title={post.title}
-        category={post.category}
-        content={post.content}
-        coverImage={post.coverImage}
-        publishedAt={post.publishedAt?.toISOString() ?? null}
-        author={post.author}
-        viewCounter={<ViewCounter postId={post.id} />}
-      />
-    </section>
+    <div className="max-w-[960px] mx-auto px-6 py-12 lg:flex lg:gap-10">
+      <aside className="hidden lg:block w-[200px] shrink-0">
+        <TableOfContents content={post.content} />
+      </aside>
+      <section className="flex-1 min-w-0 max-w-[720px]">
+        <PostDetail
+          title={post.title}
+          category={post.category}
+          content={post.content}
+          coverImage={post.coverImage}
+          publishedAt={post.publishedAt?.toISOString() ?? null}
+          author={post.author}
+          viewCounter={<ViewCounter postId={post.id} />}
+        />
+      </section>
+    </div>
   );
 }
