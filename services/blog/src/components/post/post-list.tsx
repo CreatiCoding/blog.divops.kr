@@ -92,7 +92,7 @@ export function PostList({
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2 mb-2.5">
                 {post.category && (
-                  <span className="text-[12px] font-semibold uppercase tracking-wider text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded">
+                  <span className="text-[12px] font-semibold uppercase tracking-wider text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 px-2 py-0.5 rounded">
                     {post.category}
                   </span>
                 )}
