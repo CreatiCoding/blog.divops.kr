@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { type Heading, extractHeadings } from '@/lib/heading-utils';
+import { extractHeadings } from '@/lib/heading-utils';
 
 export function TableOfContents({ content }: { content: string }) {
   const headings = extractHeadings(content);
