@@ -47,6 +47,12 @@ body {
   --tw-prose-quote-borders: #374151;
 }
 
+.prose h1,
+.prose h2,
+.prose h3 {
+  scroll-margin-top: 80px;
+}
+
 .prose h1 {
   font-size: 1.75em;
   font-weight: 800;
