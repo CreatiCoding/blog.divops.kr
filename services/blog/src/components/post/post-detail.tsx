@@ -60,7 +60,7 @@ export function PostDetail({
           )}
           {viewCounter}
         </div>
-        <h1 className="text-[26px] md:text-[30px] font-extrabold leading-[1.3] tracking-tight text-gray-900 dark:text-gray-100 break-keep">
+        <h1 className="text-[32px] md:text-[38px] font-extrabold leading-[1.25] tracking-tight text-gray-900 dark:text-gray-100 break-keep">
           {title}
         </h1>
         {author?.name && (
