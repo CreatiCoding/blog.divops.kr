@@ -45,7 +45,7 @@ export function PostDetail({
       <header className="mb-12 pt-8">
         <div className="flex items-center gap-2.5 mb-5">
           {category && (
-            <span className="text-[12px] font-semibold uppercase tracking-wider text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded">
+            <span className="text-[12px] font-semibold uppercase tracking-wider text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 px-2 py-0.5 rounded">
               {category}
             </span>
           )}
