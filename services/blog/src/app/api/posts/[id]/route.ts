@@ -20,7 +20,6 @@ export async function GET(
       coverImage: posts.coverImage,
       published: posts.published,
       publishedAt: posts.publishedAt,
-      viewCount: posts.viewCount,
       authorId: posts.authorId,
       createdAt: posts.createdAt,
       updatedAt: posts.updatedAt,

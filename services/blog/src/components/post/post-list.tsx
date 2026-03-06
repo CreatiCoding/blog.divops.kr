@@ -10,7 +10,7 @@ type Post = {
   excerpt: string | null;
   coverImage: string | null;
   publishedAt: string | null;
-  viewCount: number;
+  viewCount?: number;
   author: { name: string | null; image: string | null } | null;
 };
 
@@ -46,7 +46,7 @@ export function PostList({ posts }: { posts: Post[] }) {
                   })}
                 </time>
               )}
-              {post.viewCount > 0 && (
+              {post.viewCount != null && post.viewCount > 0 && (
                 <span className="text-[13px] text-gray-300 dark:text-gray-600">
                   조회 {post.viewCount.toLocaleString()}
                 </span>

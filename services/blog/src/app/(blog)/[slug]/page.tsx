@@ -69,7 +69,6 @@ export default async function PostPage({
       content: posts.content,
       coverImage: posts.coverImage,
       publishedAt: posts.publishedAt,
-      viewCount: posts.viewCount,
       author: {
         name: users.name,
         image: users.image,
@@ -90,9 +89,7 @@ export default async function PostPage({
         coverImage={post.coverImage}
         publishedAt={post.publishedAt?.toISOString() ?? null}
         author={post.author}
-        viewCounter={
-          <ViewCounter postId={post.id} initialCount={post.viewCount} />
-        }
+        viewCounter={<ViewCounter postId={post.id} />}
       />
     </section>
   );

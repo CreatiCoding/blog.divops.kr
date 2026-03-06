@@ -2,14 +2,8 @@
 
 import { useEffect, useState } from 'react';
 
-export function ViewCounter({
-  postId,
-  initialCount,
-}: {
-  postId: string;
-  initialCount: number;
-}) {
-  const [count, setCount] = useState(initialCount);
+export function ViewCounter({ postId }: { postId: string }) {
+  const [count, setCount] = useState<number | null>(null);
 
   useEffect(() => {
     fetch(`/api/posts/${postId}/view`, { method: 'POST' })
@@ -21,6 +15,8 @@ export function ViewCounter({
       })
       .catch(() => {});
   }, [postId]);
+
+  if (count === null) return null;
 
   return (
     <span className="text-[13px] text-gray-300 dark:text-gray-600">

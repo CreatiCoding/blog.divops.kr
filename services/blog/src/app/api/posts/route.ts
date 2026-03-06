@@ -19,7 +19,6 @@ export async function GET(request: Request) {
         excerpt: posts.excerpt,
         coverImage: posts.coverImage,
         publishedAt: posts.publishedAt,
-        viewCount: posts.viewCount,
         author: {
           name: users.name,
           image: users.image,

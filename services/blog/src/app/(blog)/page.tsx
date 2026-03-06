@@ -14,7 +14,6 @@ export default async function HomePage() {
     excerpt: string | null;
     coverImage: string | null;
     publishedAt: Date | null;
-    viewCount: number;
     author: { name: string | null; image: string | null } | null;
   }[] = [];
 
@@ -28,7 +27,6 @@ export default async function HomePage() {
         excerpt: posts.excerpt,
         coverImage: posts.coverImage,
         publishedAt: posts.publishedAt,
-        viewCount: posts.viewCount,
         author: {
           name: users.name,
           image: users.image,

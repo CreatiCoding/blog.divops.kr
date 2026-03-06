@@ -12,45 +12,49 @@ export async function POST(
 ) {
   const { id } = await params;
 
-  const [post] = await db
-    .select({ id: posts.id, viewCount: posts.viewCount })
-    .from(posts)
-    .where(eq(posts.id, id));
-
-  if (!post) {
-    return Response.json({ error: 'Not found' }, { status: 404 });
-  }
-
-  const cookieStore = await cookies();
-  const viewedRaw = cookieStore.get(COOKIE_NAME)?.value ?? '[]';
-
-  let viewed: string[];
   try {
-    viewed = JSON.parse(viewedRaw);
+    const [post] = await db
+      .select({ id: posts.id, viewCount: posts.viewCount })
+      .from(posts)
+      .where(eq(posts.id, id));
+
+    if (!post) {
+      return Response.json({ error: 'Not found' }, { status: 404 });
+    }
+
+    const cookieStore = await cookies();
+    const viewedRaw = cookieStore.get(COOKIE_NAME)?.value ?? '[]';
+
+    let viewed: string[];
+    try {
+      viewed = JSON.parse(viewedRaw);
+    } catch {
+      viewed = [];
+    }
+
+    if (viewed.includes(id)) {
+      return Response.json({ viewCount: post.viewCount, alreadyViewed: true });
+    }
+
+    const [updated] = await db
+      .update(posts)
+      .set({ viewCount: sql`${posts.viewCount} + 1` })
+      .where(eq(posts.id, id))
+      .returning({ viewCount: posts.viewCount });
+
+    viewed.push(id);
+    cookieStore.set(COOKIE_NAME, JSON.stringify(viewed), {
+      maxAge: COOKIE_MAX_AGE,
+      httpOnly: true,
+      sameSite: 'lax',
+      path: '/',
+    });
+
+    return Response.json({
+      viewCount: updated?.viewCount ?? post.viewCount + 1,
+      alreadyViewed: false,
+    });
   } catch {
-    viewed = [];
+    return Response.json({ error: 'View count not available' }, { status: 503 });
   }
-
-  if (viewed.includes(id)) {
-    return Response.json({ viewCount: post.viewCount, alreadyViewed: true });
-  }
-
-  const [updated] = await db
-    .update(posts)
-    .set({ viewCount: sql`${posts.viewCount} + 1` })
-    .where(eq(posts.id, id))
-    .returning({ viewCount: posts.viewCount });
-
-  viewed.push(id);
-  cookieStore.set(COOKIE_NAME, JSON.stringify(viewed), {
-    maxAge: COOKIE_MAX_AGE,
-    httpOnly: true,
-    sameSite: 'lax',
-    path: '/',
-  });
-
-  return Response.json({
-    viewCount: updated?.viewCount ?? post.viewCount + 1,
-    alreadyViewed: false,
-  });
 }
