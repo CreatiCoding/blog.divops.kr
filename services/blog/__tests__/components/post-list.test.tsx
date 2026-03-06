@@ -43,7 +43,7 @@ describe('PostList', () => {
 
   it('UI-003: 글 링크의 href가 /<slug> 형식이다', () => {
     render(<PostList posts={[createPost({ slug: 'my-first-post' })]} />);
-    const link = screen.getByRole('link');
+    const link = screen.getByRole('link', { name: /테스트 글 제목/ });
     expect(link).toHaveAttribute('href', '/my-first-post');
   });
 

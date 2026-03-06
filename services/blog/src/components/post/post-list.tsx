@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { AuthorLink } from './author-link';
 
 type Post = {
   id: string;
@@ -56,7 +57,11 @@ export function PostList({ posts }: { posts: Post[] }) {
             )}
             {post.author?.name && (
               <p className="mt-3 text-[12px] text-gray-300 dark:text-gray-600">
-                {post.author.name}
+                <AuthorLink
+                  name={post.author.name}
+                  className="hover:text-gray-500 dark:hover:text-gray-400 transition-colors"
+                  stopPropagation
+                />
               </p>
             )}
           </article>
