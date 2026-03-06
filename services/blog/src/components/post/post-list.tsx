@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { AuthorLink } from './author-link';
 
 type Post = {
@@ -14,7 +15,53 @@ type Post = {
   author: { name: string | null; image: string | null } | null;
 };
 
-export function PostList({ posts }: { posts: Post[] }) {
+export function PostList({
+  initialPosts,
+  total,
+  pageSize,
+}: {
+  initialPosts: Post[];
+  total: number;
+  pageSize: number;
+}) {
+  const [posts, setPosts] = useState(initialPosts);
+  const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const sentinelRef = useRef<HTMLDivElement>(null);
+
+  const hasMore = posts.length < total;
+
+  const loadMore = useCallback(async () => {
+    if (loading || !hasMore) return;
+    setLoading(true);
+    const nextPage = page + 1;
+    try {
+      const res = await fetch(`/api/posts?page=${nextPage}&limit=${pageSize}`);
+      const data = await res.json();
+      setPosts((prev) => [...prev, ...data.posts]);
+      setPage(nextPage);
+    } finally {
+      setLoading(false);
+    }
+  }, [loading, hasMore, page, pageSize]);
+
+  useEffect(() => {
+    const sentinel = sentinelRef.current;
+    if (!sentinel) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting) {
+          loadMore();
+        }
+      },
+      { rootMargin: '400px' }
+    );
+
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, [loadMore]);
+
   if (posts.length === 0) {
     return (
       <div className="py-20 text-center">
@@ -67,6 +114,7 @@ export function PostList({ posts }: { posts: Post[] }) {
           </article>
         </Link>
       ))}
+      {hasMore && <div ref={sentinelRef} className="h-px" />}
     </div>
   );
 }
