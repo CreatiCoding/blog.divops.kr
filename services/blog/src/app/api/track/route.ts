@@ -20,7 +20,11 @@ export async function POST(request: Request) {
     }
 
     const userAgent = request.headers.get('user-agent') ?? null;
-    const referrer = request.headers.get('referer') ?? null;
+    const rawReferrer = request.headers.get('referer') ?? null;
+    const referrer =
+      rawReferrer && !rawReferrer.includes('blog.divops.kr')
+        ? rawReferrer
+        : null;
     const today = new Date().toISOString().slice(0, 10);
 
     await Promise.all([
