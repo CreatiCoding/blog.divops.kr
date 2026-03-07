@@ -13,15 +13,26 @@ export function generateSlug(text: string): string {
     .replace(/^-|-$/g, '');
 }
 
+export function createSlugTracker() {
+  const slugCounts = new Map<string, number>();
+  return (text: string): string => {
+    const base = generateSlug(text);
+    const count = slugCounts.get(base) ?? 0;
+    slugCounts.set(base, count + 1);
+    return count === 0 ? base : `${base}-${count}`;
+  };
+}
+
 export function extractHeadings(content: string): Heading[] {
   const headingRegex = /^(#{1,3})\s+(.+)$/gm;
   const headings: Heading[] = [];
+  const trackSlug = createSlugTracker();
   let match;
   while ((match = headingRegex.exec(content)) !== null) {
     const level = match[1]!;
     const text = match[2]!;
     headings.push({
-      id: generateSlug(text.trim()),
+      id: trackSlug(text.trim()),
       text: text.trim(),
       level: level.length,
     });
