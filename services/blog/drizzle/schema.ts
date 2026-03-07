@@ -70,6 +70,23 @@ export const verificationTokens = pgTable(
   ]
 );
 
+// ─── 방문자 추적 테이블 ───
+
+export const pageViews = pgTable(
+  'page_view',
+  {
+    id: text('id').primaryKey().$defaultFn(createId),
+    path: text('path').notNull(),
+    referrer: text('referrer'),
+    userAgent: text('userAgent'),
+    createdAt: timestamp('createdAt', { mode: 'date' }).defaultNow().notNull(),
+  },
+  (table) => [
+    index('page_view_path_idx').on(table.path),
+    index('page_view_createdAt_idx').on(table.createdAt),
+  ]
+);
+
 // ─── 블로그 테이블 ───
 
 export const posts = pgTable(

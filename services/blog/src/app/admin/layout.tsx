@@ -36,6 +36,12 @@ export default async function AdminLayout({
             >
               Posts
             </Link>
+            <Link
+              href="/admin/stats"
+              className="px-3 py-1.5 text-sm text-gray-500 dark:text-gray-400 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
+            >
+              Stats
+            </Link>
           </div>
           <div className="flex items-center gap-3">
             <span className="text-xs text-gray-400 bg-gray-100 dark:bg-gray-800 dark:text-gray-500 px-2.5 py-1 rounded-full">
