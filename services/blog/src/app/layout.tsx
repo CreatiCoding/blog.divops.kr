@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ThemeToggle } from '@/components/ThemeToggle';
+import { PageTracker } from '@/components/PageTracker';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -44,6 +45,7 @@ export default function RootLayout({
             <ThemeToggle />
           </nav>
         </header>
+        <PageTracker />
         <main className="flex-1">{children}</main>
         <footer className="border-t border-gray-100/80 dark:border-gray-800/80">
           <div className="max-w-[720px] mx-auto px-6 py-10">
