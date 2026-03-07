@@ -57,8 +57,20 @@ export default async function HomePage() {
     publishedAt: p.publishedAt?.toISOString() ?? null,
   }));
 
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'blog.divops.kr',
+    url: 'https://blog.divops.kr',
+    description: 'DevOps와 프론트엔드 기술 블로그',
+  };
+
   return (
     <section className="max-w-[720px] mx-auto px-6 pt-20 pb-16">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <div className="mb-16">
         <h1 className="text-[28px] font-bold tracking-tight text-gray-900 dark:text-gray-100">
           Blog

@@ -13,6 +13,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: jdx/mise-action@v2
+      - name: Enable Corepack
+        run: corepack enable
       - name: Install dependencies
         run: yarn install --immutable
       - name: Lint
@@ -23,6 +25,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: jdx/mise-action@v2
+      - name: Enable Corepack
+        run: corepack enable
       - name: Install dependencies
         run: yarn install --immutable
       - name: Type check
@@ -33,6 +37,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: jdx/mise-action@v2
+      - name: Enable Corepack
+        run: corepack enable
       - name: Install dependencies
         run: yarn install --immutable
       - name: Run unit tests
@@ -46,6 +52,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: jdx/mise-action@v2
+      - name: Enable Corepack
+        run: corepack enable
       - name: Install dependencies
         run: yarn install --immutable
       - name: Install Playwright browsers
