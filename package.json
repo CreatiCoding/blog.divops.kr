@@ -14,7 +14,7 @@
     "test": "yarn workspace @blog/service test",
     "e2e": "yarn workspace @blog/service e2e"
   },
-  "packageManager": "yarn@4.7.0",
+  "packageManager": "yarn@4.13.0",
   "devDependencies": {
     "typescript": "^5.9.3"
   }
