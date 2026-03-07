@@ -5,8 +5,11 @@ import {
   timestamp,
   boolean,
   integer,
+  date,
+  serial,
   index,
   uniqueIndex,
+  unique,
   primaryKey,
 } from 'drizzle-orm/pg-core';
 import { createId } from './utils';
@@ -84,6 +87,24 @@ export const pageViews = pgTable(
   (table) => [
     index('page_view_path_idx').on(table.path),
     index('page_view_createdAt_idx').on(table.createdAt),
+  ]
+);
+
+export const siteVisits = pgTable(
+  'site_visit',
+  {
+    id: serial('id').primaryKey(),
+    visitorId: text('visitor_id').notNull(),
+    visitedDate: date('visited_date', { mode: 'string' }).notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (table) => [
+    unique('site_visit_visitor_date_unique').on(
+      table.visitorId,
+      table.visitedDate
+    ),
   ]
 );
 
