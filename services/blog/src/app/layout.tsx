@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { PageTracker } from '@/components/PageTracker';
+import { VisitorCounter } from '@/components/VisitorCounter';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -42,7 +43,10 @@ export default function RootLayout({
             >
               blog.divops.kr
             </Link>
-            <ThemeToggle />
+            <div className="flex items-center gap-3">
+              <VisitorCounter />
+              <ThemeToggle />
+            </div>
           </nav>
         </header>
         <PageTracker />
