@@ -96,6 +96,7 @@ export function PostDetail({
           remarkPlugins={[remarkGfm]}
           rehypePlugins={[rehypeRaw, rehypeHighlight]}
           components={(() => {
+            let firstImageSkipped = false;
             const trackSlug = createSlugTracker();
             return {
             h1: ({ children, ...props }) => {
@@ -110,10 +111,14 @@ export function PostDetail({
               const id = trackSlug(getTextContent(children));
               return <h3 id={id} {...props}>{children}</h3>;
             },
-            img: ({ src, alt, ...props }) => (
+            img: ({ src, alt, ...props }) => {
+              if (coverImage && !firstImageSkipped && src === coverImage) {
+                firstImageSkipped = true;
+                return null;
+              }
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={src} alt={alt ?? ''} loading="lazy" {...props} />
-            ),
+              return <img src={src} alt={alt ?? ''} loading="lazy" {...props} />;
+            },
             a: ({ href, children, ...props }) => (
               <a href={href} target="_blank" rel="noopener noreferrer" {...props}>
                 {children}
