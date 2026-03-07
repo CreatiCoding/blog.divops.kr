@@ -41,6 +41,9 @@ export async function generateMetadata({
     return {
       title: post.title,
       description: post.excerpt,
+      alternates: {
+        canonical: `/${post.slug}`,
+      },
       openGraph: {
         title: post.title,
         description: post.excerpt ?? undefined,
@@ -81,8 +84,33 @@ export default async function PostPage({
 
   if (!post) notFound();
 
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: post.title,
+    datePublished: post.publishedAt?.toISOString(),
+    dateModified: post.publishedAt?.toISOString(),
+    ...(post.coverImage && { image: post.coverImage }),
+    author: post.author?.name
+      ? { '@type': 'Person', name: post.author.name }
+      : undefined,
+    publisher: {
+      '@type': 'Organization',
+      name: 'blog.divops.kr',
+      url: 'https://blog.divops.kr',
+    },
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': `https://blog.divops.kr/${slug}`,
+    },
+  };
+
   return (
     <div className="max-w-[960px] mx-auto px-6 py-12 lg:flex lg:gap-10">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <aside className="hidden lg:block w-[200px] shrink-0">
         <TableOfContents content={post.content} />
       </aside>
