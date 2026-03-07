@@ -8,7 +8,7 @@ import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
 import rehypeHighlight from 'rehype-highlight';
 import 'highlight.js/styles/github-dark.css';
-import { generateSlug } from '@/lib/heading-utils';
+import { createSlugTracker } from '@/lib/heading-utils';
 
 type PostDetailProps = {
   title: string;
@@ -95,17 +95,19 @@ export function PostDetail({
         <ReactMarkdown
           remarkPlugins={[remarkGfm]}
           rehypePlugins={[rehypeRaw, rehypeHighlight]}
-          components={{
+          components={(() => {
+            const trackSlug = createSlugTracker();
+            return {
             h1: ({ children, ...props }) => {
-              const id = generateSlug(getTextContent(children));
+              const id = trackSlug(getTextContent(children));
               return <h1 id={id} {...props}>{children}</h1>;
             },
             h2: ({ children, ...props }) => {
-              const id = generateSlug(getTextContent(children));
+              const id = trackSlug(getTextContent(children));
               return <h2 id={id} {...props}>{children}</h2>;
             },
             h3: ({ children, ...props }) => {
-              const id = generateSlug(getTextContent(children));
+              const id = trackSlug(getTextContent(children));
               return <h3 id={id} {...props}>{children}</h3>;
             },
             img: ({ src, alt, ...props }) => (
@@ -117,7 +119,8 @@ export function PostDetail({
                 {children}
               </a>
             ),
-          }}
+          };
+          })()}
         >
           {content}
         </ReactMarkdown>
