@@ -59,16 +59,41 @@ export default function WritePage() {
       .finally(() => setLoading(false));
   }, [editId, router]);
 
-  const handleSlugGenerate = () => {
-    if (slug) return;
-    setSlug(
-      title
-        .toLowerCase()
-        .replace(/[^a-z0-9가-힣\s-]/g, '')
-        .replace(/\s+/g, '-')
-        .replace(/-+/g, '-')
-        .trim()
-    );
+  const [slugGenerating, setSlugGenerating] = useState(false);
+  const [isSlugManual, setIsSlugManual] = useState(!!editId);
+  const [isUrlSlugManual, setIsUrlSlugManual] = useState(!!editId);
+
+  const handleSlugGenerate = async () => {
+    if (!title.trim()) return;
+    if (isSlugManual && isUrlSlugManual) return;
+
+    setSlugGenerating(true);
+    try {
+      const res = await fetch('/api/slugify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title }),
+      });
+      if (!res.ok) return;
+
+      const data = await res.json();
+      if (!isSlugManual) setSlug(data.slug);
+      if (!isUrlSlugManual) setUrlSlug(data.urlSlug);
+    } catch {
+      // fallback: 클라이언트 사이드 slug 생성
+      if (!isSlugManual) {
+        setSlug(
+          title
+            .toLowerCase()
+            .replace(/[^a-z0-9가-힣\s-]/g, '')
+            .replace(/\s+/g, '-')
+            .replace(/-+/g, '-')
+            .trim()
+        );
+      }
+    } finally {
+      setSlugGenerating(false);
+    }
   };
 
   const handleSubmit = async (published: boolean) => {
@@ -163,9 +188,12 @@ export default function WritePage() {
             <input
               type="text"
               value={slug}
-              onChange={(e) => setSlug(e.target.value)}
+              onChange={(e) => {
+                setSlug(e.target.value);
+                setIsSlugManual(true);
+              }}
               className="w-full border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900/10 dark:focus:ring-gray-100/10 focus:border-gray-300 dark:focus:border-gray-600 transition-shadow placeholder:text-gray-300 dark:placeholder:text-gray-600 font-mono"
-              placeholder="포스트-슬러그"
+              placeholder={slugGenerating ? '생성 중...' : '포스트-슬러그'}
             />
           </div>
 
@@ -176,17 +204,18 @@ export default function WritePage() {
             <input
               type="text"
               value={urlSlug}
-              onChange={(e) =>
+              onChange={(e) => {
                 setUrlSlug(
                   e.target.value
                     .toLowerCase()
                     .replace(/[^a-z0-9\s-]/g, '')
                     .replace(/\s+/g, '-')
                     .replace(/-+/g, '-')
-                )
-              }
+                );
+                setIsUrlSlugManual(true);
+              }}
               className="w-full border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900/10 dark:focus:ring-gray-100/10 focus:border-gray-300 dark:focus:border-gray-600 transition-shadow placeholder:text-gray-300 dark:placeholder:text-gray-600 font-mono"
-              placeholder="english-url-slug"
+              placeholder={slugGenerating ? 'Generating...' : 'english-url-slug'}
             />
           </div>
 
