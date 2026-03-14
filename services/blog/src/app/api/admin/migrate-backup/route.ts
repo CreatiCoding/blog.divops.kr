@@ -14,10 +14,29 @@ interface BackupPost {
   updatedAt: number;
 }
 
+// 일회용 마이그레이션 토큰 (마이그레이션 완료 후 이 파일 삭제)
+const MIGRATE_TOKEN = process.env.MIGRATE_TOKEN;
+
 export async function POST(request: Request) {
-  const session = await auth();
-  if (!session?.user?.id) {
-    return Response.json({ error: 'Unauthorized' }, { status: 401 });
+  const authHeader = request.headers.get('authorization');
+  const token = authHeader?.replace('Bearer ', '');
+
+  // 토큰 인증 또는 세션 인증
+  if (token && MIGRATE_TOKEN && token === MIGRATE_TOKEN) {
+    // 토큰 인증 통과
+  } else {
+    const session = await auth();
+    if (!session?.user?.id) {
+      return Response.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+    const [adminCheck] = await db
+      .select()
+      .from(users)
+      .where(eq(users.role, 'ADMIN'))
+      .limit(1);
+    if (!adminCheck || adminCheck.id !== session.user.id) {
+      return Response.json({ error: 'Admin only' }, { status: 403 });
+    }
   }
 
   const [admin] = await db
@@ -26,8 +45,8 @@ export async function POST(request: Request) {
     .where(eq(users.role, 'ADMIN'))
     .limit(1);
 
-  if (!admin || admin.id !== session.user.id) {
-    return Response.json({ error: 'Admin only' }, { status: 403 });
+  if (!admin) {
+    return Response.json({ error: 'No admin user found' }, { status: 500 });
   }
 
   try {
