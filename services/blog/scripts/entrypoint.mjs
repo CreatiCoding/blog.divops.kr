@@ -20,6 +20,22 @@ if (!DATABASE_URL) {
 
 const sql = postgres(DATABASE_URL);
 
+// ─── 0. DB 연결 대기 ───
+
+async function waitForDb(maxRetries = 10, delayMs = 3000) {
+  for (let i = 1; i <= maxRetries; i++) {
+    try {
+      await sql`SELECT 1`;
+      console.log('  ✅ DB connected');
+      return;
+    } catch (err) {
+      console.log(`  ⏳ DB not ready (attempt ${i}/${maxRetries}): ${err.message}`);
+      if (i === maxRetries) throw err;
+      await new Promise((r) => setTimeout(r, delayMs));
+    }
+  }
+}
+
 // ─── 1. 마이그레이션 ───
 
 async function runMigrations() {
@@ -120,6 +136,9 @@ async function backfillUrlSlugs() {
 // ─── Main ───
 
 try {
+  console.log('\n⏳ Waiting for DB...');
+  await waitForDb();
+
   console.log('\n🔄 Running migrations...');
   await runMigrations();
 
