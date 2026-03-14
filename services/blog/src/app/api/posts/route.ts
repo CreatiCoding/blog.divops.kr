@@ -16,6 +16,7 @@ export async function GET(request: Request) {
         id: posts.id,
         title: posts.title,
         slug: posts.slug,
+        urlSlug: posts.urlSlug,
         category: posts.category,
         excerpt: posts.excerpt,
         coverImage: posts.coverImage,
@@ -52,11 +53,11 @@ export async function POST(request: Request) {
   }
 
   const body = await request.json();
-  const { title, content, excerpt, coverImage, slug, published, category } = body;
+  const { title, content, excerpt, coverImage, slug, urlSlug, published, category } = body;
 
-  if (!title || !content || !slug) {
+  if (!title || !content || !slug || !urlSlug) {
     return Response.json(
-      { error: 'title, content, slug are required' },
+      { error: 'title, content, slug, urlSlug are required' },
       { status: 400 }
     );
   }
@@ -66,6 +67,7 @@ export async function POST(request: Request) {
     .values({
       title,
       slug,
+      urlSlug,
       content,
       category: category ?? null,
       excerpt,

@@ -11,6 +11,7 @@ type Post = {
   id: string;
   title: string;
   slug: string;
+  urlSlug: string;
   category: string | null;
   excerpt: string | null;
   coverImage: string | null;
@@ -77,7 +78,7 @@ export function PostList({
   return (
     <div className="flex flex-col">
       {posts.map((post) => (
-        <Link key={post.id} href={`/${post.slug}`} className="group block">
+        <Link key={post.id} href={`/${post.urlSlug}`} className="group block">
           <article className="py-6 border-b border-gray-100 dark:border-gray-800 last:border-0 flex flex-col sm:flex-row sm:gap-5">
             <div className="relative w-full h-[180px] sm:w-[160px] sm:h-[100px] shrink-0 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-800 mb-3 sm:mb-0">
               <Image

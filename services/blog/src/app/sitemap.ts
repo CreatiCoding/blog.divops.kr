@@ -7,12 +7,12 @@ export const dynamic = 'force-dynamic';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const allPosts = await db
-    .select({ slug: posts.slug, updatedAt: posts.updatedAt })
+    .select({ urlSlug: posts.urlSlug, updatedAt: posts.updatedAt })
     .from(posts)
     .where(eq(posts.published, true));
 
   const postUrls = allPosts.map((post) => ({
-    url: `https://blog.divops.kr/${post.slug}`,
+    url: `https://blog.divops.kr/${post.urlSlug}`,
     lastModified: post.updatedAt,
     changeFrequency: 'weekly' as const,
     priority: 0.8,

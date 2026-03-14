@@ -25,6 +25,7 @@ async function main() {
       .values({
         title: 'Hello World',
         slug: 'hello-world',
+        urlSlug: 'hello-world',
         content: '<p>블로그의 첫 번째 글입니다. 환영합니다!</p>',
         excerpt: '블로그의 첫 번째 글입니다.',
         published: true,
