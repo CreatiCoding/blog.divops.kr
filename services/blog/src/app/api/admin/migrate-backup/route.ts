@@ -32,7 +32,7 @@ export async function POST(request: Request) {
     const [adminCheck] = await db
       .select()
       .from(users)
-      .where(eq(users.role, 'ADMIN'))
+      .where(eq(users.name, 'CreatiCoding'))
       .limit(1);
     if (!adminCheck || adminCheck.id !== session.user.id) {
       return Response.json({ error: 'Admin only' }, { status: 403 });
@@ -42,11 +42,11 @@ export async function POST(request: Request) {
   const [admin] = await db
     .select()
     .from(users)
-    .where(eq(users.role, 'ADMIN'))
+    .where(eq(users.name, 'CreatiCoding'))
     .limit(1);
 
   if (!admin) {
-    return Response.json({ error: 'No admin user found' }, { status: 500 });
+    return Response.json({ error: 'No user found (CreatiCoding)' }, { status: 500 });
   }
 
   try {
