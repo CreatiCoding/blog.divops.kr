@@ -28,4 +28,4 @@ RUN --mount=type=cache,target=/app/services/blog/.next/cache,uid=1001,gid=1001 \
 EXPOSE 3000
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
-CMD ["sh", "-c", "yarn node services/blog/scripts/entrypoint.js && yarn workspace @blog/service start"]
+CMD ["sh", "-c", "yarn node services/blog/scripts/entrypoint.mjs && yarn workspace @blog/service start"]
