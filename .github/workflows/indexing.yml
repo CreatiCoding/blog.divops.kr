@@ -1,0 +1,25 @@
+name: Google Indexing
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # 매일 UTC 00:00 (KST 09:00)
+  workflow_dispatch:
+
+jobs:
+  index:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Write service account key
+        run: echo '${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}' > service_account.json
+
+      - name: Request indexing
+        run: npx google-indexing-script --path ./service_account.json https://blog.divops.kr
+
+      - name: Cleanup
+        if: always()
+        run: rm -f service_account.json
