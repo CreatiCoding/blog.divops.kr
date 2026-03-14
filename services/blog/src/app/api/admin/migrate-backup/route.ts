@@ -39,14 +39,13 @@ export async function POST(request: Request) {
     }
   }
 
-  const [admin] = await db
-    .select()
-    .from(users)
-    .where(eq(users.name, 'CreatiCoding'))
-    .limit(1);
+  // 유저 목록 확인 (디버깅)
+  const allUsers = await db.select({ id: users.id, name: users.name, role: users.role }).from(users);
+
+  const admin = allUsers[0];
 
   if (!admin) {
-    return Response.json({ error: 'No user found (CreatiCoding)' }, { status: 500 });
+    return Response.json({ error: 'No users in DB', users: allUsers }, { status: 500 });
   }
 
   try {
