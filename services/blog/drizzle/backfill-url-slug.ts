@@ -1,6 +1,6 @@
 import { config } from 'dotenv';
 import { drizzle } from 'drizzle-orm/postgres-js';
-import { eq, isNull } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 import postgres from 'postgres';
 import { posts } from './schema';
 
