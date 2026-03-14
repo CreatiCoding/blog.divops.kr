@@ -116,6 +116,7 @@ export const posts = pgTable(
     id: text('id').primaryKey().$defaultFn(createId),
     title: text('title').notNull(),
     slug: text('slug').notNull().unique(),
+    urlSlug: text('urlSlug').notNull().unique(),
     content: text('content').notNull(),
     excerpt: text('excerpt'),
     category: text('category'),
@@ -131,6 +132,7 @@ export const posts = pgTable(
   },
   (table) => [
     uniqueIndex('post_slug_idx').on(table.slug),
+    uniqueIndex('post_url_slug_idx').on(table.urlSlug),
     index('post_published_publishedAt_idx').on(
       table.published,
       table.publishedAt

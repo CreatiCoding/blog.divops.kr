@@ -18,6 +18,7 @@ const createPost = (
   id: '1',
   title: '테스트 글 제목',
   slug: 'test-post',
+  urlSlug: 'test-post',
   category: null as string | null,
   excerpt: '테스트 요약입니다.',
   coverImage: null,
@@ -48,8 +49,8 @@ describe('PostList', () => {
     expect(heading).toBeInTheDocument();
   });
 
-  it('UI-003: 글 링크의 href가 /<slug> 형식이다', () => {
-    renderPostList([createPost({ slug: 'my-first-post' })]);
+  it('UI-003: 글 링크의 href가 /<urlSlug> 형식이다', () => {
+    renderPostList([createPost({ urlSlug: 'my-first-post' })]);
     const link = screen.getByRole('link', { name: /테스트 글 제목/ });
     expect(link).toHaveAttribute('href', '/my-first-post');
   });
@@ -94,9 +95,9 @@ describe('PostList', () => {
 
   it('여러 글이 있으면 글 수만큼 article을 렌더링한다', () => {
     const posts = [
-      createPost({ id: '1', title: '글 1', slug: 'post-1' }),
-      createPost({ id: '2', title: '글 2', slug: 'post-2' }),
-      createPost({ id: '3', title: '글 3', slug: 'post-3' }),
+      createPost({ id: '1', title: '글 1', slug: 'post-1', urlSlug: 'post-1' }),
+      createPost({ id: '2', title: '글 2', slug: 'post-2', urlSlug: 'post-2' }),
+      createPost({ id: '3', title: '글 3', slug: 'post-3', urlSlug: 'post-3' }),
     ];
     renderPostList(posts);
     const articles = screen.getAllByRole('article');

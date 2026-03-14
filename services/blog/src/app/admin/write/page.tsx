@@ -11,6 +11,7 @@ export default function WritePage() {
 
   const [title, setTitle] = useState('');
   const [slug, setSlug] = useState('');
+  const [urlSlug, setUrlSlug] = useState('');
   const [category, setCategory] = useState('');
   const [excerpt, setExcerpt] = useState('');
   const [content, setContent] = useState('');
@@ -47,6 +48,7 @@ export default function WritePage() {
       .then((post) => {
         setTitle(post.title);
         setSlug(post.slug);
+        setUrlSlug(post.urlSlug ?? '');
         setCategory(post.category ?? '');
         setExcerpt(post.excerpt ?? '');
         setContent(post.content);
@@ -70,7 +72,7 @@ export default function WritePage() {
   };
 
   const handleSubmit = async (published: boolean) => {
-    if (!title || !content || !slug) return;
+    if (!title || !content || !slug || !urlSlug) return;
     setSaving(true);
 
     const url = editId ? `/api/posts/${editId}` : '/api/posts';
@@ -79,7 +81,7 @@ export default function WritePage() {
     const res = await fetch(url, {
       method,
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ title, slug, category: category || null, content, excerpt, published }),
+      body: JSON.stringify({ title, slug, urlSlug, category: category || null, content, excerpt, published }),
     });
 
     if (res.ok) {
@@ -153,7 +155,7 @@ export default function WritePage() {
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-3 gap-4">
           <div>
             <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1.5">
               Slug
@@ -163,7 +165,28 @@ export default function WritePage() {
               value={slug}
               onChange={(e) => setSlug(e.target.value)}
               className="w-full border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900/10 dark:focus:ring-gray-100/10 focus:border-gray-300 dark:focus:border-gray-600 transition-shadow placeholder:text-gray-300 dark:placeholder:text-gray-600 font-mono"
-              placeholder="post-slug"
+              placeholder="포스트-슬러그"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1.5">
+              URL Slug
+            </label>
+            <input
+              type="text"
+              value={urlSlug}
+              onChange={(e) =>
+                setUrlSlug(
+                  e.target.value
+                    .toLowerCase()
+                    .replace(/[^a-z0-9\s-]/g, '')
+                    .replace(/\s+/g, '-')
+                    .replace(/-+/g, '-')
+                )
+              }
+              className="w-full border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900/10 dark:focus:ring-gray-100/10 focus:border-gray-300 dark:focus:border-gray-600 transition-shadow placeholder:text-gray-300 dark:placeholder:text-gray-600 font-mono"
+              placeholder="english-url-slug"
             />
           </div>
 

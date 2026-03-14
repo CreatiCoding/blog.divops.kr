@@ -1,4 +1,4 @@
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import type { Metadata } from 'next';
 import { eq } from 'drizzle-orm';
 import { db } from '@/lib/db';
@@ -7,17 +7,34 @@ import { PostDetail } from '@/components/post/post-detail';
 import { ViewCounter } from '@/components/post/view-counter';
 import { TableOfContents } from '@/components/post/table-of-contents';
 
+/**
+ * 기존 한글 slug로 접근한 경우 영어 urlSlug로 301 리다이렉트.
+ * urlSlug로 찾지 못했을 때만 호출된다.
+ */
+async function redirectIfOldSlug(slug: string): Promise<never> {
+  const [post] = await db
+    .select({ urlSlug: posts.urlSlug })
+    .from(posts)
+    .where(eq(posts.slug, slug));
+
+  if (post?.urlSlug) {
+    redirect(`/${post.urlSlug}`);
+  }
+
+  notFound();
+}
+
 export const revalidate = 60;
 export const dynamicParams = true;
 
 export async function generateStaticParams() {
   try {
     const allPosts = await db
-      .select({ slug: posts.slug })
+      .select({ urlSlug: posts.urlSlug })
       .from(posts)
       .where(eq(posts.published, true));
 
-    return allPosts.map((post) => ({ slug: post.slug }));
+    return allPosts.map((post) => ({ slug: post.urlSlug }));
   } catch {
     return [];
   }
@@ -29,12 +46,12 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug: rawSlug } = await params;
-  const slug = decodeURIComponent(rawSlug);
+  const urlSlug = decodeURIComponent(rawSlug);
   try {
     const [post] = await db
       .select()
       .from(posts)
-      .where(eq(posts.slug, slug));
+      .where(eq(posts.urlSlug, urlSlug));
 
     if (!post) return {};
 
@@ -42,7 +59,7 @@ export async function generateMetadata({
       title: post.title,
       description: post.excerpt,
       alternates: {
-        canonical: `/${post.slug}`,
+        canonical: `/${post.urlSlug}`,
       },
       openGraph: {
         title: post.title,
@@ -63,12 +80,13 @@ export default async function PostPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug: rawSlug } = await params;
-  const slug = decodeURIComponent(rawSlug);
+  const urlSlug = decodeURIComponent(rawSlug);
 
   const [post] = await db
     .select({
       id: posts.id,
       title: posts.title,
+      urlSlug: posts.urlSlug,
       category: posts.category,
       content: posts.content,
       coverImage: posts.coverImage,
@@ -80,9 +98,12 @@ export default async function PostPage({
     })
     .from(posts)
     .leftJoin(users, eq(posts.authorId, users.id))
-    .where(eq(posts.slug, slug));
+    .where(eq(posts.urlSlug, urlSlug));
 
-  if (!post) notFound();
+  if (!post) {
+    await redirectIfOldSlug(urlSlug);
+    return; // unreachable, but satisfies TypeScript
+  }
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -101,7 +122,7 @@ export default async function PostPage({
     },
     mainEntityOfPage: {
       '@type': 'WebPage',
-      '@id': `https://blog.divops.kr/${slug}`,
+      '@id': `https://blog.divops.kr/${post.urlSlug}`,
     },
   };
 

@@ -16,6 +16,8 @@
     "db:push": "drizzle-kit push",
     "db:seed": "tsx drizzle/seed.ts",
     "db:studio": "drizzle-kit studio",
+    "db:backfill-url-slug": "tsx drizzle/backfill-url-slug.ts",
+    "db:backfill-url-slug:preview": "tsx drizzle/backfill-url-slug.ts --dry-run",
     "deploy": "bash scripts/deploy.sh"
   },
   "dependencies": {

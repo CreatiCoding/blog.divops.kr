@@ -15,6 +15,7 @@ vi.mock('@db/schema', () => ({
     id: 'posts.id',
     title: 'posts.title',
     slug: 'posts.slug',
+    urlSlug: 'posts.urlSlug',
     content: 'posts.content',
     excerpt: 'posts.excerpt',
     coverImage: 'posts.coverImage',
@@ -241,6 +242,7 @@ describe('Posts API', () => {
             title: 'Draft Post',
             content: 'Draft content',
             slug: 'draft-post',
+            urlSlug: 'draft-post',
             published: false,
           }),
         })
@@ -273,6 +275,7 @@ describe('Posts API', () => {
             title: 'Published Post',
             content: 'Published content',
             slug: 'published-post',
+            urlSlug: 'published-post',
             published: true,
           }),
         })
@@ -376,6 +379,7 @@ describe('Posts API', () => {
             title: 'No Published Flag',
             content: 'Content',
             slug: 'no-published-flag',
+            urlSlug: 'no-published-flag',
             // published 필드 생략
           }),
         })
