@@ -14,7 +14,7 @@ COPY services/blog services/blog
 COPY services/api services/api
 RUN yarn workspace @blog/service build
 
-FROM golang:1.25-alpine AS api
+FROM golang:1.27.3-alpine AS api
 WORKDIR /src
 COPY services/api/go.mod services/api/go.sum ./
 RUN go mod download
@@ -23,7 +23,7 @@ COPY services/api ./
 RUN test -z "$(gofmt -l .)" && CGO_ENABLED=0 go vet ./... && CGO_ENABLED=0 go test ./...
 RUN CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o /out/api .
 
-FROM nginx:1.28-alpine
+FROM nginx:1.30.6-alpine
 COPY services/blog/nginx.conf /etc/nginx/nginx.conf
 COPY services/blog/entrypoint.sh /entrypoint.sh
 COPY --from=web /app/services/blog/dist /usr/share/nginx/html
