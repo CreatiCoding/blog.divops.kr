@@ -1,0 +1,203 @@
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css');
+@import 'tailwindcss';
+@plugin '@tailwindcss/typography';
+@custom-variant dark (&:where(.dark, .dark *));
+/* Go 가 서버에서 그리는 초기 HTML(services/api/pages.go)의 클래스도 생성되게 한다 */
+@source "../../api";
+
+/* Base styles */
+html {
+  font-family: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont,
+    system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo',
+    'Noto Sans KR', 'Malgun Gothic', 'Apple Color Emoji', 'Segoe UI Emoji',
+    'Segoe UI Symbol', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: #ffffff;
+  color: #191f28;
+}
+
+.dark body {
+  background-color: #030712;
+  color: #e5e7eb;
+}
+
+/* Custom prose styles for article content */
+.prose {
+  --tw-prose-body: #374151;
+  --tw-prose-headings: #111827;
+  --tw-prose-links: #111827;
+  --tw-prose-bold: #111827;
+  --tw-prose-code: #111827;
+  --tw-prose-quotes: #4b5563;
+  --tw-prose-quote-borders: #e5e7eb;
+  line-height: 1.85;
+  font-size: 16.5px;
+}
+
+.dark .prose {
+  --tw-prose-body: #d1d5db;
+  --tw-prose-headings: #f3f4f6;
+  --tw-prose-links: #f3f4f6;
+  --tw-prose-bold: #f3f4f6;
+  --tw-prose-code: #f3f4f6;
+  --tw-prose-quotes: #9ca3af;
+  --tw-prose-quote-borders: #374151;
+}
+
+.prose h1,
+.prose h2,
+.prose h3 {
+  scroll-margin-top: 80px;
+}
+
+.prose h1 {
+  font-size: 1.75em;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+}
+
+.prose h2 {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-top: 2.5em;
+  margin-bottom: 0.75em;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.dark .prose h2 {
+  border-bottom-color: #1f2937;
+}
+
+.prose h3 {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin-top: 2em;
+}
+
+.prose p {
+  margin-top: 1.25em;
+  margin-bottom: 1.25em;
+}
+
+.prose code {
+  background-color: #f3f4f6;
+  padding: 0.2em 0.45em;
+  border-radius: 6px;
+  font-size: 0.875em;
+  font-weight: 500;
+}
+
+.dark .prose code {
+  background-color: #1f2937;
+}
+
+.prose code::before,
+.prose code::after {
+  content: none;
+}
+
+.prose pre {
+  background-color: #1a1a2e;
+  border-radius: 12px;
+  padding: 1.25em 1.5em;
+  overflow-x: auto;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.prose pre code {
+  background-color: transparent;
+  padding: 0;
+  font-size: 0.85em;
+}
+
+.prose blockquote {
+  border-left: 3px solid #111827;
+  background-color: #f9fafb;
+  padding: 1em 1.5em;
+  border-radius: 0 8px 8px 0;
+  font-style: normal;
+}
+
+.dark .prose blockquote {
+  border-left-color: #9ca3af;
+  background-color: #111827;
+}
+
+.prose img {
+  border-radius: 12px;
+  margin-top: 2em;
+  margin-bottom: 2em;
+}
+
+.prose a {
+  color: #111827;
+  text-decoration: underline;
+  text-decoration-color: #d1d5db;
+  text-underline-offset: 3px;
+  font-weight: 500;
+  transition: text-decoration-color 0.2s;
+}
+
+.prose a:hover {
+  text-decoration-color: #111827;
+}
+
+.dark .prose a {
+  color: #f3f4f6;
+  text-decoration-color: #4b5563;
+}
+
+.dark .prose a:hover {
+  text-decoration-color: #f3f4f6;
+}
+
+.prose hr {
+  border-color: #f3f4f6;
+  margin-top: 3em;
+  margin-bottom: 3em;
+}
+
+.dark .prose hr {
+  border-color: #1f2937;
+}
+
+.prose ul,
+.prose ol {
+  padding-left: 1.5em;
+}
+
+.prose li {
+  margin-top: 0.4em;
+  margin-bottom: 0.4em;
+}
+
+.prose table {
+  font-size: 0.9em;
+  border-collapse: collapse;
+}
+
+.prose th {
+  background-color: #f9fafb;
+  font-weight: 600;
+  padding: 0.75em 1em;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.dark .prose th {
+  background-color: #111827;
+  border-bottom-color: #374151;
+}
+
+.prose td {
+  padding: 0.75em 1em;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.dark .prose td {
+  border-bottom-color: #1f2937;
+}

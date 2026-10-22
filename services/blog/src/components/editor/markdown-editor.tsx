@@ -1,5 +1,3 @@
-'use client';
-
 import { useState, useRef, useCallback } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';

@@ -1,24 +1,10 @@
-'use client';
-
-import Image from 'next/image';
-import Link from 'next/link';
+import type { PostListItem } from '@/data';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { AuthorLink } from './author-link';
 
 const DEFAULT_THUMBNAIL = 'https://picsum.photos/400/200';
 
-type Post = {
-  id: string;
-  title: string;
-  slug: string;
-  urlSlug: string;
-  category: string | null;
-  excerpt: string | null;
-  coverImage: string | null;
-  publishedAt: string | null;
-  viewCount?: number;
-  author: { name: string | null; image: string | null } | null;
-};
+type Post = PostListItem;
 
 export function PostList({
   initialPosts,
@@ -78,16 +64,14 @@ export function PostList({
   return (
     <div className="flex flex-col">
       {posts.map((post) => (
-        <Link key={post.id} href={`/${post.urlSlug}`} className="group block">
+        <a key={post.id} href={`/${post.urlSlug}`} className="group block">
           <article className="py-6 border-b border-gray-100 dark:border-gray-800 last:border-0 flex flex-col sm:flex-row sm:gap-5">
             <div className="relative w-full h-[180px] sm:w-[160px] sm:h-[100px] shrink-0 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-800 mb-3 sm:mb-0">
-              <Image
+              <img
                 src={post.coverImage || DEFAULT_THUMBNAIL}
                 alt=""
-                fill
-                className="object-cover group-hover:scale-105 transition-transform duration-300"
-                sizes="(max-width: 640px) 100vw, 160px"
-                unoptimized={!post.coverImage}
+                loading="lazy"
+                className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
               />
             </div>
             <div className="min-w-0 flex-1">
@@ -134,7 +118,7 @@ export function PostList({
               )}
             </div>
           </article>
-        </Link>
+        </a>
       ))}
       {hasMore && <div ref={sentinelRef} className="h-px" />}
     </div>

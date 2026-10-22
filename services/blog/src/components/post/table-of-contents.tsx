@@ -1,5 +1,3 @@
-'use client';
-
 import { useEffect, useState } from 'react';
 import { extractHeadings } from '@/lib/heading-utils';
 

@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!--ssr-head-->
+    <link rel="icon" href="/icon.svg" type="image/svg+xml" sizes="any" />
+    <script>(function(){try{var d=document.documentElement;var t=localStorage.getItem('theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){d.classList.add('dark')}}catch(e){}})()</script>
+    <script type="module" src="/src/main.tsx"></script>
+  </head>
+  <body class="bg-white text-gray-900 dark:bg-gray-950 dark:text-gray-100 transition-colors">
+    <div id="root" class="min-h-screen flex flex-col"><!--ssr-body--></div>
+    <!--ssr-data-->
+  </body>
+</html>

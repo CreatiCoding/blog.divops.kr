@@ -1,10 +1,8 @@
-'use client';
-
 import { useEffect } from 'react';
-import { usePathname } from 'next/navigation';
+import { useLocation } from 'react-router';
 
 export function PageTracker() {
-  const pathname = usePathname();
+  const { pathname } = useLocation();
 
   useEffect(() => {
     if (pathname.startsWith('/admin') || pathname.startsWith('/api')) return;

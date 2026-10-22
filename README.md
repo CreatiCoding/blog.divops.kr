@@ -1,175 +1,62 @@
 # blog.divops.kr
 
-DevOps/프론트엔드 기술 블로그 플랫폼. 관리자가 로그인 후 글을 작성하고, 방문자에게 SEO 최적화된 정적 페이지로 제공합니다.
+DevOps/프론트엔드 기술 블로그. 관리자가 GitHub 로그인 후 글을 쓰고, 방문자·검색엔진에는 서버에서 메타와 본문을 넣은 HTML 로 제공합니다.
 
-## 기술스택
+> 2026-10: Next.js 16 에서 **Vite(React) + nginx + Go** 한 컨테이너 구조로 바꿨습니다. 런타임 이미지에 Node 가 없습니다.
+> `docs/` 는 Next.js 시절 문서라 구조 설명은 이 README 와 `AGENTS.md` 가 기준입니다.
 
-| 역할 | 기술 |
-|------|------|
-| **프레임워크** | Next.js 16 (App Router) |
-| **언어** | TypeScript (strict) |
-| **스타일링** | Tailwind CSS v4 |
-| **DB** | PostgreSQL 15 + Drizzle ORM |
-| **인증** | Auth.js (NextAuth v5) + GitHub OAuth |
-| **에디터** | TipTap (WYSIWYG) |
-| **이미지 저장** | MinIO (S3 호환) |
-| **패키지 매니저** | Yarn Berry (PnP) |
-| **테스트** | Vitest / Playwright |
-| **CI/CD** | GitHub Actions |
-| **배포** | Dokploy (Docker) |
-
-## 아키텍처
+## 구조
 
 ```
-┌─────────────────────────────────────────────────┐
-│                    Dokploy                       │
-│                                                  │
-│  ┌──────────────────┐   ┌────────────────────┐  │
-│  │  Next.js 16 App  │──▶│  PostgreSQL 15     │  │
-│  │  (blog.divops.kr)│   │  (Drizzle ORM)     │  │
-│  │                  │   └────────────────────┘  │
-│  │  - 공개 (SSG/ISR)│                           │
-│  │  - 관리자 (인증) │──▶┌────────────────────┐  │
-│  │  - Auth.js       │   │  MinIO (S3 호환)   │  │
-│  └──────────────────┘   └────────────────────┘  │
-│                                                  │
-│  Traefik (리버스 프록시 + SSL)                    │
-└─────────────────────────────────────────────────┘
+services/blog   Vite + React 19 + react-router + Tailwind v4 (화면, Dockerfile, nginx.conf, entrypoint.sh)
+services/api    Go 서버 (표준 라이브러리 + pgx + goldmark)
+                - /api/* 전부 (예전 Next route handler 와 같은 경로·응답)
+                - 화면 HTML: index.html 의 <head> 에 title/description/og/canonical/JSON-LD,
+                  #root 에 크롤러용 본문 HTML, __DATA__ 에 초기 데이터를 넣어 내려준다
+                - /sitemap.xml, /robots.txt
+                - GitHub OAuth (콜백 /api/auth/callback/github) + DB 세션(Auth.js 와 같은 테이블·쿠키)
 ```
 
-## 로컬 개발 환경 설정
+컨테이너: nginx(:3000) 가 `/assets/*`, `/icon.svg` 를 직접 내주고 나머지는 Go(127.0.0.1:8080)로 넘깁니다. `blog.creco.dev` 는 nginx 가 `blog.divops.kr` 로 308.
 
-### 사전 요구사항
+DB 스키마는 예전 drizzle 마이그레이션(`services/blog/drizzle/migrations`, 참고용)이 만든 그대로 씁니다. Go 는 마이그레이션을 돌리지 않습니다.
 
-- [mise](https://mise.jdx.dev/) (Node.js, Yarn 버전 관리)
-- [Docker](https://www.docker.com/) (PostgreSQL, MinIO 실행용)
-- GitHub OAuth App (인증용)
+## 환경변수 (Dokploy)
 
-### 1. 저장소 클론 및 의존성 설치
+| 키 | 용도 |
+|----|------|
+| `DATABASE_URL` | Postgres 접속 |
+| `AUTH_URL` | 사이트 주소. OAuth redirect_uri = `$AUTH_URL/api/auth/callback/github`, https 면 `__Secure-` 쿠키 |
+| `AUTH_SECRET` | PKCE/state 쿠키 서명 |
+| `AUTH_GITHUB_ID`, `AUTH_GITHUB_SECRET` | GitHub OAuth 앱 |
+| `AUTH_ALLOWED_USERS` | 로그인(=글쓰기) 허용 GitHub login, 쉼표 구분. 비어 있으면 아무도 로그인 못 함 |
+| `S3_ENDPOINT`, `S3_ACCESS_KEY`, `S3_SECRET_KEY` | 이미지 업로드(MinIO, `blog-images` 버킷) |
+| `UPLOAD_MAX_FILE_SIZE_MB` | 업로드 최대 크기 (기본 10) |
+| `SQL_TOKEN` | `POST /api/sql` (임의 SQL 실행, 관리용) Bearer 토큰 |
+| `AUTH_TRUST_HOST` | Auth.js 시절 키. 지금은 읽지 않음 |
+
+## 로컬 개발
 
 ```bash
-git clone https://github.com/CreatiCoding/blog.divops.kr.git
-cd blog.divops.kr
+mise install && corepack enable && yarn install
 
-# mise로 Node.js 22 + Yarn 4 설치
-mise install
+# 프론트 빌드 (services/blog/dist)
+yarn build
 
-# 의존성 설치 (PnP 모드)
-yarn install
+# Go 서버: 빌드된 dist 를 STATIC_DIR 로 주면 화면·정적 파일까지 Go 가 내준다
+cd services/api
+DATABASE_URL=postgres://... AUTH_URL=http://localhost:8080 STATIC_DIR=../blog/dist API_ADDR=:8080 go run .
+
+# 테스트
+go vet ./... && go test ./...
 ```
 
-### 2. 외부 서비스 실행 (Docker)
+운영과 같은 구성: 저장소 루트에서 `docker build -f services/blog/Dockerfile .` 후 컨테이너 3000 포트.
 
-```bash
-# PostgreSQL
-docker run -d --name blog-postgres \
-  -e POSTGRES_USER=blog \
-  -e POSTGRES_PASSWORD=blog \
-  -e POSTGRES_DB=blog \
-  -p 5432:5432 \
-  postgres:15-alpine
+## 배포
 
-# MinIO (S3 호환 스토리지)
-docker run -d --name blog-minio \
-  -e MINIO_ROOT_USER=minioadmin \
-  -e MINIO_ROOT_PASSWORD=minioadmin \
-  -p 9000:9000 \
-  -p 9001:9001 \
-  minio/minio server /data --console-address ":9001"
-```
-
-MinIO 콘솔(`http://localhost:9001`)에서 `blog-images` 버킷을 생성하고, Access Key를 발급하세요.
-
-### 3. 환경변수 설정
-
-```bash
-cp .env.example services/blog/.env.local
-```
-
-`services/blog/.env.local`을 열어 값을 채웁니다:
-
-```env
-# ─── Database ───
-DATABASE_URL="postgresql://blog:blog@localhost:5432/blog"
-
-# ─── Auth.js ───
-AUTH_SECRET="$(openssl rand -base64 32 으로 생성)"
-AUTH_GITHUB_ID="GitHub OAuth App Client ID"
-AUTH_GITHUB_SECRET="GitHub OAuth App Client Secret"
-
-# ─── MinIO (S3) ───
-S3_ENDPOINT="http://localhost:9000"
-S3_ACCESS_KEY="MinIO에서 발급한 Access Key"
-S3_SECRET_KEY="MinIO에서 발급한 Secret Key"
-
-# ─── App ───
-NEXTAUTH_URL="http://localhost:3000"
-```
-
-> GitHub OAuth App은 [GitHub Settings > Developer settings > OAuth Apps](https://github.com/settings/developers)에서 생성합니다.
-> - Homepage URL: `http://localhost:3000`
-> - Authorization callback URL: `http://localhost:3000/api/auth/callback/github`
-
-### 4. DB 마이그레이션 및 시드
-
-```bash
-# 스키마를 DB에 반영
-yarn workspace @blog/service db:push
-
-# 기본 데이터 시드 (관리자 계정 + 샘플 글)
-yarn workspace @blog/service db:seed
-```
-
-### 5. 개발 서버 실행
-
-```bash
-yarn dev
-```
-
-`http://localhost:3000`에서 블로그를 확인할 수 있습니다.
-
-- 블로그 홈: `http://localhost:3000`
-- 관리자 페이지: `http://localhost:3000/admin` (GitHub 로그인 필요)
-- Drizzle Studio (DB 뷰어): `yarn workspace @blog/service db:studio`
-
-## 주요 명령어
-
-| 명령어 | 설명 |
-|--------|------|
-| `yarn dev` | 개발 서버 실행 |
-| `yarn build` | 프로덕션 빌드 |
-| `yarn test` | 단위 테스트 (Vitest) |
-| `yarn e2e` | E2E 테스트 (Playwright) |
-| `yarn lint` | ESLint 검사 |
-| `yarn typecheck` | TypeScript 타입 검사 |
-
-## 프로젝트 구조
-
-```
-blog.divops.kr/
-├── services/blog/          # Next.js 16 블로그 앱
-│   ├── src/app/            # App Router 페이지/API
-│   ├── src/components/     # React 컴포넌트
-│   ├── src/lib/            # DB, Auth, S3 클라이언트
-│   ├── drizzle/            # DB 스키마, 시드, 마이그레이션
-│   ├── __tests__/          # 단위 테스트
-│   └── e2e/                # E2E 테스트
-├── packages/fixtures/      # 테스트용 mock 데이터
-├── packages/testing/       # 테스트 공유 유틸리티
-└── docs/                   # 프로젝트 문서
-```
-
-## 문서
-
-| 문서 | 설명 |
-|------|------|
-| [01-introduction](docs/01-introduction.md) | 프로젝트 소개, 인프라, 아키텍처 다이어그램 |
-| [02-architecture](docs/02-architecture.md) | 설계서, DB 스키마, 인증/이미지 플로우, SEO |
-| [03-testing](docs/03-testing.md) | 테스트 전략, CI/CD 파이프라인 |
-| [04-contributing](docs/04-contributing.md) | 개발 환경, 브랜치 전략, 코드 컨벤션 |
-| [05-implementation-guide](docs/05-implementation-guide.md) | Step 1~9 구현 가이드 |
-| [06-feature-specification](docs/06-feature-specification.md) | 기능 명세서 및 테스트 케이스 |
+`main` push → Dokploy(앱 `PAsCNfn9M18-gIzzR9Zld`) 자동 배포 + `.github/workflows/deploy.yml`. `indexing.yml` 이 매일 sitemap 기반 Google 색인 요청을 보냅니다.
 
 ## 라이센스
 
-[MIT](LICENSE)
+MIT

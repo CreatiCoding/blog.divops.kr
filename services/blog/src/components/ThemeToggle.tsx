@@ -1,5 +1,3 @@
-'use client';
-
 import { useSyncExternalStore, useCallback } from 'react';
 
 const subscribe = (callback: () => void) => {
@@ -24,7 +22,6 @@ export function ThemeToggle() {
   return (
     <button
       onClick={toggle}
-      suppressHydrationWarning
       className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors cursor-pointer"
       aria-label={dark ? '라이트 모드로 전환' : '다크 모드로 전환'}
     >

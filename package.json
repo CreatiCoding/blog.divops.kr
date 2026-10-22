@@ -8,11 +8,8 @@
   "scripts": {
     "dev": "yarn workspace @blog/service dev",
     "build": "yarn workspace @blog/service build",
-    "start": "yarn workspace @blog/service start",
     "lint": "yarn workspace @blog/service lint",
-    "typecheck": "yarn workspace @blog/service typecheck",
-    "test": "yarn workspace @blog/service test",
-    "e2e": "yarn workspace @blog/service e2e"
+    "typecheck": "yarn workspace @blog/service typecheck"
   },
   "packageManager": "yarn@4.13.0",
   "devDependencies": {

@@ -1,7 +1,4 @@
-'use client';
-
 import type { ReactNode } from 'react';
-import Image from 'next/image';
 import { AuthorLink } from './author-link';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -66,7 +63,7 @@ export function PostDetail({
         {author?.name && (
           <div className="flex items-center gap-2.5 mt-6">
             {author.image && (
-              <Image
+              <img
                 src={author.image}
                 alt={author.name}
                 width={24}
@@ -82,13 +79,13 @@ export function PostDetail({
         )}
       </header>
       {coverImage && (
-        <Image
+        <img
           src={coverImage}
           alt={title}
           width={800}
           height={400}
           className="w-full rounded-xl mb-12 object-cover"
-          priority
+          fetchPriority="high"
         />
       )}
       <div className="prose prose-lg max-w-none">
@@ -116,7 +113,6 @@ export function PostDetail({
                 firstImageSkipped = true;
                 return null;
               }
-              // eslint-disable-next-line @next/next/no-img-element
               return <img src={src} alt={alt ?? ''} loading="lazy" {...props} />;
             },
             a: ({ href, children, ...props }) => (
