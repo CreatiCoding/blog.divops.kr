@@ -19,6 +19,8 @@ WORKDIR /src
 COPY services/api/go.mod services/api/go.sum ./
 RUN go mod download
 COPY services/api ./
+# CI 대신 여기서 검사한다. 실패하면 빌드가 멈추고 Dokploy 는 기존 컨테이너를 그대로 둔다.
+RUN test -z "$(gofmt -l .)" && CGO_ENABLED=0 go vet ./... && CGO_ENABLED=0 go test ./...
 RUN CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o /out/api .
 
 FROM nginx:1.28-alpine

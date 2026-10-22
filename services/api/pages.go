@@ -24,7 +24,7 @@ import (
 )
 
 type pageRenderer struct {
-	dir                         string
+	dir                            string
 	pre, afterHead, afterBody, end string
 }
 

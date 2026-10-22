@@ -15,7 +15,7 @@ func TestGenerateSlug(t *testing.T) {
 		"CLI 개발에서 고려할 점들":       "cli-개발에서-고려할-점들",
 		"register가 뭐길래?":        "register가-뭐길래",
 		"ts-node vs tsx, 직접 비교": "ts-node-vs-tsx-직접-비교",
-		"  --Hello  World--  ":    "hello-world",
+		"  --Hello  World--  ":  "hello-world",
 	}
 	for in, want := range cases {
 		if got := generateSlug(in); got != want {

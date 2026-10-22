@@ -2,8 +2,8 @@ package main
 
 import (
 	"context"
-	"crypto/tls"
 	"crypto/rand"
+	"crypto/tls"
 	"encoding/hex"
 	"encoding/json"
 	"errors"
