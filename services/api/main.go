@@ -32,6 +32,7 @@ type config struct {
 	s3Endpoint    string
 	s3AccessKey   string
 	s3SecretKey   string
+	s3PublicURL   string // 업로드한 이미지를 읽는 공개 주소. 비면 s3Endpoint/버킷 을 쓴다
 	uploadMaxMB   float64
 	sqlToken      string
 	staticDir     string
@@ -76,6 +77,7 @@ func loadConfig() config {
 		s3Endpoint:    strings.TrimRight(os.Getenv("S3_ENDPOINT"), "/"),
 		s3AccessKey:   os.Getenv("S3_ACCESS_KEY"),
 		s3SecretKey:   os.Getenv("S3_SECRET_KEY"),
+		s3PublicURL:   strings.TrimRight(os.Getenv("S3_PUBLIC_URL"), "/"),
 		uploadMaxMB:   maxMB,
 		sqlToken:      os.Getenv("SQL_TOKEN"),
 		staticDir:     staticDir,

@@ -184,4 +184,15 @@ func TestAWSEscapePath(t *testing.T) {
 	}
 }
 
+func TestPublicObjectURL(t *testing.T) {
+	s := &server{cfg: config{s3Endpoint: "https://s3.example.com"}}
+	if got := s.publicObjectURL("uploads/a.png"); got != "https://s3.example.com/blog-images/uploads/a.png" {
+		t.Errorf("fallback: got %s", got)
+	}
+	s.cfg.s3PublicURL = "https://img.example.com"
+	if got := s.publicObjectURL("uploads/a.png"); got != "https://img.example.com/uploads/a.png" {
+		t.Errorf("public: got %s", got)
+	}
+}
+
 var _ = http.StatusOK

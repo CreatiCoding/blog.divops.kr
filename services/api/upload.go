@@ -8,6 +8,7 @@ import (
 	"encoding/hex"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"net/url"
 	"strings"
@@ -50,10 +51,20 @@ func (s *server) upload(w http.ResponseWriter, r *http.Request) {
 	ext := parts[len(parts)-1]
 	key := fmt.Sprintf("uploads/%d-%s.%s", time.Now().UnixMilli(), uuidV4(), ext)
 	if err := s.s3Put(r.Context(), key, data, ctype); err != nil {
+		log.Printf("upload: %v", err)
 		jsonError(w, 500, "Upload failed")
 		return
 	}
-	writeJSON(w, 200, map[string]string{"url": s.cfg.s3Endpoint + "/" + s3Bucket + "/" + key})
+	writeJSON(w, 200, map[string]string{"url": s.publicObjectURL(key)})
+}
+
+// publicObjectURL 은 업로드한 객체를 브라우저가 읽을 주소다. Garage 는 S3 API 로 익명 읽기를 허용하지 않아서
+// 웹 엔드포인트 주소(S3_PUBLIC_URL)를 따로 둔다. 비어 있으면 예전처럼 S3 path-style 주소를 돌려준다.
+func (s *server) publicObjectURL(key string) string {
+	if s.cfg.s3PublicURL != "" {
+		return s.cfg.s3PublicURL + "/" + key
+	}
+	return s.cfg.s3Endpoint + "/" + s3Bucket + "/" + key
 }
 
 // s3Put 은 path-style PutObject 를 AWS SigV4(us-east-1)로 서명해 보낸다. SDK 없이 MinIO 에 올리기 위한 최소 구현이다.
