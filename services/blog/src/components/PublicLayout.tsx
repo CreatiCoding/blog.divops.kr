@@ -10,7 +10,7 @@ export function PublicLayout() {
         <nav className="max-w-[720px] mx-auto px-6 h-14 flex items-center justify-between">
           <a
             href="/"
-            className="text-[15px] font-semibold tracking-tight text-gray-900 dark:text-gray-100 hover:text-gray-500 dark:hover:text-gray-400 transition-colors"
+            className="text-[15px] font-semibold text-gray-900 dark:text-gray-100 hover:text-gray-500 dark:hover:text-gray-400 transition-colors"
           >
             blog.divops.kr
           </a>
@@ -26,7 +26,7 @@ export function PublicLayout() {
       </main>
       <footer className="border-t border-gray-100/80 dark:border-gray-800/80">
         <div className="max-w-[720px] mx-auto px-6 py-10">
-          <p className="text-[13px] text-gray-300 dark:text-gray-600">
+          <p className="text-[13px] text-gray-500 dark:text-gray-400">
             &copy; {new Date().getFullYear()} divops.kr
           </p>
         </div>

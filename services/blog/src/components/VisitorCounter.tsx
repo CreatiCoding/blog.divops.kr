@@ -15,14 +15,14 @@ export function VisitorCounter() {
   if (!stats) return null;
 
   return (
-    <span className="text-[11px] text-gray-400 dark:text-gray-500">
+    <span className="text-[12px] tabular-nums text-gray-500 dark:text-gray-400">
       Total{' '}
-      <span className="font-medium text-gray-500 dark:text-gray-400">
+      <span className="font-medium text-gray-600 dark:text-gray-300">
         {stats.total.toLocaleString()}
       </span>
       <span className="mx-1">|</span>
       Today{' '}
-      <span className="font-medium text-gray-500 dark:text-gray-400">
+      <span className="font-medium text-gray-600 dark:text-gray-300">
         {stats.today.toLocaleString()}
       </span>
     </span>

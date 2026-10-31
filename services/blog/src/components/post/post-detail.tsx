@@ -40,14 +40,14 @@ export function PostDetail({
   return (
     <article>
       <header className="mb-12 pt-8">
-        <div className="flex items-center gap-2.5 mb-5">
+        <div className="flex items-center gap-2 mb-5">
           {category && (
-            <span className="text-[12px] font-semibold uppercase tracking-wider text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 px-2 py-0.5 rounded">
+            <span className="text-[12px] font-medium text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 px-2 py-0.5 rounded">
               {category}
             </span>
           )}
           {publishedAt && (
-            <time dateTime={publishedAt} className="text-[13px] text-gray-300 dark:text-gray-600">
+            <time dateTime={publishedAt} className="text-[13px] text-gray-500 dark:text-gray-400">
               {new Date(publishedAt).toLocaleDateString('ko-KR', {
                 year: 'numeric',
                 month: 'long',
@@ -57,11 +57,11 @@ export function PostDetail({
           )}
           {viewCounter}
         </div>
-        <h1 className="text-[32px] md:text-[38px] font-extrabold leading-[1.25] tracking-tight text-gray-900 dark:text-gray-100 break-keep">
+        <h1 className="text-[32px] md:text-[38px] font-semibold leading-[1.25] tracking-tight text-gray-900 dark:text-gray-100 break-keep">
           {title}
         </h1>
         {author?.name && (
-          <div className="flex items-center gap-2.5 mt-6">
+          <div className="flex items-center gap-2 mt-6">
             {author.image && (
               <img
                 src={author.image}
@@ -73,7 +73,7 @@ export function PostDetail({
             )}
             <AuthorLink
               name={author.name}
-              className="text-[13px] text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+              className="text-[13px] text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
             />
           </div>
         )}
