@@ -17,7 +17,7 @@ export function ViewCounter({ postId }: { postId: string }) {
   if (count === null) return null;
 
   return (
-    <span className="text-[13px] text-gray-300 dark:text-gray-600">
+    <span className="text-[13px] text-gray-500 dark:text-gray-400">
       조회 {count.toLocaleString()}
     </span>
   );
