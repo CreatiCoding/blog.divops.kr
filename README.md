@@ -55,7 +55,7 @@ go vet ./... && go test ./...
 
 ## 배포
 
-`main` push → Dokploy(앱 `PAsCNfn9M18-gIzzR9Zld`) 자동 배포 + `.github/workflows/deploy.yml`. `indexing.yml` 이 매일 sitemap 기반 Google 색인 요청을 보냅니다.
+`main` push → [ci.creco.dev](https://ci.creco.dev) 파이프라인 `blog`가 테스트하고 통과하면 Dokploy(앱 `PAsCNfn9M18-gIzzR9Zld`)로 배포합니다. PR 에도 같은 테스트가 커밋 상태로 붙습니다. 파이프라인 `blog-indexing` 이 매일 09:00(KST) sitemap 기반 Google 색인 요청을 보냅니다.
 
 ## 라이센스
 
