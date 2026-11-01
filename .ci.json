@@ -1,0 +1,39 @@
+{
+  "pipelines": [
+    {
+      "id": "blog",
+      "branch": "main",
+      "on": [
+        "push",
+        "pr"
+      ],
+      "timeout": "40m",
+      "steps": [
+        "corepack yarn install --immutable",
+        "corepack yarn lint",
+        "corepack yarn typecheck",
+        "corepack yarn build"
+      ],
+      "deploy": [
+        "PAsCNfn9M18-gIzzR9Zld"
+      ],
+      "notifyAutofix": true
+    },
+    {
+      "id": "blog-indexing",
+      "branch": "main",
+      "on": [
+        "cron"
+      ],
+      "cron": "0 9 * * *",
+      "steps": [
+        "umask 077",
+        "key=\"$TMPDIR/sa-$CI_RUN_ID.json\"",
+        "trap 'rm -f \"$key\"' EXIT",
+        "printf %s \"$GOOGLE_SERVICE_ACCOUNT_KEY\" \u003e \"$key\"",
+        "npx -y google-indexing-script --path \"$key\" https://blog.divops.kr"
+      ],
+      "note": "Google 색인 요청(매일 09:00 KST)"
+    }
+  ]
+}
