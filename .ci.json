@@ -9,17 +9,14 @@
       ],
       "timeout": "40m",
       "steps": [
-        "vuln-check",
-        "unslop-check",
-        "corepack yarn install --immutable",
-        "corepack yarn lint",
-        "corepack yarn typecheck",
-        "corepack yarn build"
+        "ci-par vuln-check unslop-check 'corepack yarn install --immutable'",
+        "ci-par 'corepack yarn lint' 'corepack yarn typecheck' 'corepack yarn build'"
       ],
       "deploy": [
         "PAsCNfn9M18-gIzzR9Zld"
       ],
-      "notifyAutofix": true
+      "notifyAutofix": true,
+      "note": "병렬: ci-par 가 서로 상관없는 검사를 CI_CPUS(에이전트가 잡을 줄 때 남은 코어로 정함)만큼 동시에 돌린다"
     },
     {
       "id": "blog-indexing",
@@ -32,7 +29,7 @@
         "umask 077",
         "key=\"$TMPDIR/sa-$CI_RUN_ID.json\"",
         "trap 'rm -f \"$key\"' EXIT",
-        "printf %s \"$GOOGLE_SERVICE_ACCOUNT_KEY\" \u003e \"$key\"",
+        "printf %s \"$GOOGLE_SERVICE_ACCOUNT_KEY\" > \"$key\"",
         "npx -y google-indexing-script --path \"$key\" https://blog.divops.kr"
       ],
       "note": "Google 색인 요청(매일 09:00 KST)"
