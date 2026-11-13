@@ -2,7 +2,7 @@
 # 한 컨테이너 안에서 nginx(:3000, 정적 파일) + Go API·페이지 서버(127.0.0.1:8080)를 같이 돌린다.
 # 런타임 이미지에는 Node 가 없다(Node 는 프론트 빌드 단계에서만 쓴다).
 
-FROM node:22.23.4-alpine AS web
+FROM node:22.23.5-alpine AS web
 RUN corepack enable
 WORKDIR /app
 COPY package.json yarn.lock .yarnrc.yml tsconfig.json ./
@@ -14,7 +14,7 @@ COPY services/blog services/blog
 COPY services/api services/api
 RUN yarn workspace @blog/service build
 
-FROM golang:1.27.3-alpine AS api
+FROM golang:1.27.4-alpine AS api
 WORKDIR /src
 COPY services/api/go.mod services/api/go.sum ./
 RUN go mod download
