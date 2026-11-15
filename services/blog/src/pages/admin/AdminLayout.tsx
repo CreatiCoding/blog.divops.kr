@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, Navigate, Outlet, useLocation } from 'react-router';
+import { syncThemeColor } from '@/lib/theme-color';
 
 type Session = { user: { name: string | null; id: string } } | null;
 
@@ -20,12 +21,21 @@ export function AdminLayout() {
       .catch(() => setSession(null));
   }, []);
 
+  // 관리 화면의 상단 바는 다크에서 공개 화면과 색이 달라, 들어오고 나갈 때 theme-color 를 맞춘다.
+  useEffect(() => {
+    if (!session) return;
+    syncThemeColor();
+    return () => {
+      requestAnimationFrame(syncThemeColor);
+    };
+  }, [session]);
+
   if (pathname === '/admin' || pathname === '/admin/') return <Navigate to="/admin/posts" replace />;
   if (!session) return null;
 
   return (
     <div className="min-h-screen bg-[#f8f9fb] dark:bg-gray-950">
-      <nav className="sticky top-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200/60 dark:border-gray-800/60">
+      <nav data-topbar className="sticky top-0 z-50 bg-white dark:bg-gray-900 border-b border-gray-200/60 dark:border-gray-800/60">
         <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
           <div className="flex items-center gap-1.5">
             <Link

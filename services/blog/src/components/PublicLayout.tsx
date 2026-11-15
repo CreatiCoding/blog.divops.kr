@@ -6,7 +6,7 @@ import { VisitorCounter } from './VisitorCounter';
 export function PublicLayout() {
   return (
     <>
-      <header className="sticky top-0 z-50 bg-white/70 dark:bg-gray-950/70 backdrop-blur-xl border-b border-gray-100/80 dark:border-gray-800/80">
+      <header data-topbar className="sticky top-0 z-50 bg-white dark:bg-gray-950 border-b border-gray-100/80 dark:border-gray-800/80">
         <nav className="max-w-[720px] mx-auto px-6 h-14 flex items-center justify-between">
           <a
             href="/"

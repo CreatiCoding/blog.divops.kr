@@ -1,4 +1,5 @@
 import { useSyncExternalStore, useCallback } from 'react';
+import { syncThemeColor } from '@/lib/theme-color';
 
 const subscribe = (callback: () => void) => {
   window.addEventListener('storage', callback);
@@ -17,6 +18,7 @@ export function ThemeToggle() {
     const next = !document.documentElement.classList.contains('dark');
     document.documentElement.classList.toggle('dark', next);
     localStorage.setItem('theme', next ? 'dark' : 'light');
+    syncThemeColor();
   }, []);
 
   return (
