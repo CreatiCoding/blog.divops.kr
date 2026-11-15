@@ -202,3 +202,12 @@ body {
 .dark .prose td {
   border-bottom-color: #1f2937;
 }
+
+/* iOS Safari 는 16px 보다 작은 입력칸에 포커스하면 화면을 확대한다. 터치 기기에서는 16px 이상(레이어 밖이라 text-sm 보다 앞선다). */
+@media (pointer: coarse) {
+  input,
+  textarea,
+  select {
+    font-size: 16px;
+  }
+}

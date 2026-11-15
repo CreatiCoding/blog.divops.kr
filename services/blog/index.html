@@ -3,9 +3,13 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- iOS 홈 화면 앱은 상태 표시줄을 맨 위 sticky 헤더(data-topbar)의 배경색으로 칠한다. theme-color 도 그 색. -->
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#030712" media="(prefers-color-scheme: dark)" />
     <!--ssr-head-->
     <link rel="icon" href="/icon.svg" type="image/svg+xml" sizes="any" />
-    <script>(function(){try{var d=document.documentElement;var t=localStorage.getItem('theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){d.classList.add('dark')}}catch(e){}})()</script>
+    <script>(function(){try{var d=document.documentElement;var t=localStorage.getItem('theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){d.classList.add('dark')}var c=d.classList.contains('dark')?'#030712':'#ffffff';document.querySelectorAll('meta[name="theme-color"]').forEach(function(m){m.setAttribute('content',c)})}catch(e){}})()</script>
     <script type="module" src="/src/main.tsx"></script>
   </head>
   <body class="bg-white text-gray-900 dark:bg-gray-950 dark:text-gray-100 transition-colors">

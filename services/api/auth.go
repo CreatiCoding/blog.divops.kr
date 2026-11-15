@@ -177,15 +177,17 @@ func (s *server) safeCallback(raw string) string {
 	return raw
 }
 
+// .frame 은 position: fixed; inset: 0 에 배경색을 둔다. iOS 홈 화면 앱이 상태 표시줄을 그 색으로 칠한다(없으면 흐리게 덮는다).
 func authPage(w http.ResponseWriter, status int, title, inner string) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	w.Header().Set("Cache-Control", "no-store")
 	w.WriteHeader(status)
-	fmt.Fprintf(w, `<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><meta name="robots" content="noindex"/><title>%s</title>
-<style>body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;font-family:-apple-system,BlinkMacSystemFont,system-ui,sans-serif;background:#f9fafb;color:#111827}
+	fmt.Fprintf(w, `<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><meta name="robots" content="noindex"/><meta name="color-scheme" content="light"/><meta name="theme-color" content="#f9fafb" media="(prefers-color-scheme: light)"/><meta name="theme-color" content="#f9fafb" media="(prefers-color-scheme: dark)"/><title>%s</title>
+<style>body{margin:0;font-family:-apple-system,BlinkMacSystemFont,system-ui,sans-serif;background:#f9fafb;color:#111827}
+.frame{position:fixed;inset:0;overflow:auto;display:flex;align-items:center;justify-content:center;background:#f9fafb}
 .card{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:32px;min-width:280px;text-align:center}
 button,a.btn{display:inline-block;margin-top:16px;padding:10px 18px;border-radius:8px;border:0;background:#24292f;color:#fff;font-size:15px;cursor:pointer;text-decoration:none}
-p{color:#6b7280;font-size:14px}</style></head><body><div class="card">%s</div></body></html>`, html.EscapeString(title), inner)
+p{color:#6b7280;font-size:14px}</style></head><body><div class="frame"><div class="card">%s</div></div></body></html>`, html.EscapeString(title), inner)
 }
 
 func (s *server) authSigninPage(w http.ResponseWriter, r *http.Request) {
