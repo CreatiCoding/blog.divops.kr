@@ -23,7 +23,7 @@ COPY services/api ./
 RUN test -z "$(gofmt -l .)" && CGO_ENABLED=0 go vet ./... && CGO_ENABLED=0 go test ./...
 RUN CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o /out/api .
 
-FROM nginx:1.30.6-alpine
+FROM nginx:1.30.7-alpine
 COPY services/blog/nginx.conf /etc/nginx/nginx.conf
 COPY services/blog/entrypoint.sh /entrypoint.sh
 COPY --from=web /app/services/blog/dist /usr/share/nginx/html
